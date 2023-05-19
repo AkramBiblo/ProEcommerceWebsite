@@ -17,8 +17,16 @@ router.get("/", (req, res) => {
 router.get("/basic_module", (req, res) => {
   res.render("basic_module", { title: "Modules" });
 });
-router.get("/about", (req, res) => {
-  res.render("about", { title: "About" });
+router.get("/companies", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_company`;
+  con.query(sql, (err, result) => {
+    res.render("companies", {
+      message: result,
+      title: "Companies",
+    });
+  });
 });
 router.get("/contact", (req, res) => {
   res.render("contact", { title: "Contact" });
@@ -42,5 +50,29 @@ router.get("/store", (req, res) => {
     res.render("store", { title: "Store Login" });
   }
 });
+
+router.post("/basic_new_company_upload", (req, res) => {
+  let name = req.body.name;
+  let address = req.body.address;
+  let mobile = req.body.mobile;
+
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `INSERT INTO basic_company (name, address, mobile) VALUES ("${name}", "${address}", "${mobile}")`;
+  con.query(sql, (err, result) => {
+    res.send("New company added successfully!")
+  })
+});
+
+router.post("/basic_company_delete", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM basic_company WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    res.send("Company removed successfully!");
+  });
+});
+
 
 module.exports = router;

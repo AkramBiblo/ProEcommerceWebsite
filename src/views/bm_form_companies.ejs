@@ -521,7 +521,120 @@
         </div>
       </div>
     </div>
-    <div class="col"></div>
+    <div class="col">
+      <form action="/file/fileProcess_2" method="POST">
+        <div class="container mt-4">
+          <div class="container mt-2" style="width: 500px">
+            <div class="row mt-3">
+              <div class="col-lg-4">
+                <h6><label for="Type">Product Type</label></h6>
+              </div>
+              <div class="col-lg-8">
+                <!-- <input type="text" class="form-control" name="Type" placeholder="Type" value="<% if (locals.message != null) {%><%= message.Type %><% } %>" required> -->
+                <div class="form-group">
+                  <select class="form-control" id="Type" name="Type">
+                    <option>Select Product Type</option>
+                    <option value="Refrigerator & Freezer">
+                      Refrigerator & Freezer
+                    </option>
+                    <option value="Television">Television</option>
+                    <option value="Air Conditioner">Air Conditioner</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Computer">Computer</option>
+                    <option value="Washing Machine">Washing Machine</option>
+                    <option value="Oven">Microwave & Electric Oven</option>
+                    <!-- <option value="Blender">Blender & Grinder</option> -->
+                    <option value="HAP">Home Appliances</option>
+                    <option value="KAP">Kitchen Appliances</option>
+                    <option value="Fan">Fan</option>
+                    <option value="Light">LED Light</option>
+                    <option value="ElectricalAccess">
+                      Electrical Accessories
+                    </option>
+                    <option value="Cables">Cables</option>
+                    <option value="E-Bike">E-Bike</option>
+                    <option value="Compressor">Compressor</option>
+                    <option value="Battery">Battery</option>
+                    <option value="Hardware & Sanitary Solutions">
+                      Hardware & Sanitary Solutions
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3" id="hiddenDiv"></div>
+            <div class="row mt-3">
+              <div class="col-lg-4">
+                <h6><label for="Title">Model</label></h6>
+              </div>
+              <div class="col-lg-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="Title"
+                  placeholder="Model"
+                  value="<% if (locals.message != null) {%><%= message.Title %><% } %>"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-lg-4">
+                <h6><label for="brand">Brand</label></h6>
+              </div>
+              <div class="col-lg-8">
+                <div class="form-group">
+                  <select class="form-control" name="brand">
+                    <option>Select Brand</option>
+                    <option value="Walton">Walton</option>
+                    <option value="Vision">Vision</option>
+                    <option value="Samsung">Samsung</option>
+                    <option value="Gree">Gree</option>
+                    <option value="Singer">Singer</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-lg-4">
+                <h6><label for="color">Color</label></h6>
+              </div>
+              <div class="col-lg-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="color"
+                  placeholder="Color"
+                  value="<% if (locals.message != null) {%><%= message.color %><% } %>"
+                />
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-lg-4">
+                <h6><label for="Qty">Quantity</label></h6>
+              </div>
+              <div class="col-lg-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="Qty"
+                  placeholder="Quantity"
+                  value="<% if (locals.message != null) {%><%= message.Qty %><% } %>"
+                />
+              </div>
+            </div>
+            <div class="container d-flex justify-content-end mt-4 mr-3">
+              <input
+                class="btn btn-success mr-2"
+                name="submit"
+                type="submit"
+                value="Upload"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
   <script>
     function logout() {
