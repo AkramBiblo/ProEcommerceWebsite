@@ -14,8 +14,8 @@ router.get("/", (req, res) => {
     title: "admin",
   });
 });
-router.get("/services", (req, res) => {
-  res.render("services", { title: "Services" });
+router.get("/basic_module", (req, res) => {
+  res.render("basic_module", { title: "Modules" });
 });
 router.get("/about", (req, res) => {
   res.render("about", { title: "About" });

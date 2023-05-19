@@ -3,232 +3,28 @@
     box-sizing: border-box;
   }
 
-  .bg_red {
-    background-color: #fc0303;
+  .navDiv {
+    max-width: 300px;
+          padding: 20px;
+          margin: auto;
+          border-radius: 10px;
+          background-color: rgb(5, 5, 5);
+          color:aqua
   }
-  .txt_red {
-    color: #fc0303;
-  }
-  .bg_red {
-    background-color: #003471;
-  }
-  .txt_red {
-    color: #003471;
-  }
-  #frame {
-    height: 450px;
-    width: 600px;
+  .navHead {
+    padding: 0px 6px 0px 6px;
+    border-radius: 5px;
   }
 
-  .changeColorOnHover:hover{
-    background-color: rgb(179, 236, 238);
+  .navHead:hover {
+    cursor: pointer;
+    background-color: aliceblue;
+    color:black
   }
-
- .logo {
-  height: 150px;
-  width: auto;
- }
-  
-  .primary_contact_2 {
-    display: none;
+  a {
+    text-decoration: none;
+    color: white;
   }
-
-.p0 {
-  padding: 0;
-}
-
-.h {
-    display: none;
-}
-
-#productsMenu > ul {
-  padding: 20px;
-  list-style-type: none;
-}
-
-#adminBg { 
-  background: url("/img/banner/LaptopStore.jpg") no-repeat center fixed; 
-  background-size: cover;
-}
-#allProductsPage { 
-  background: url("/img/banner/allproducts.jpg") no-repeat center fixed; 
-  background-size: cover;
-}
-
-.font_14px {
-  font-size: 14px;
-}
-
-.detailsUl > li {
-  margin-top: -5px;
-}
-#searchDiv_1 {
-  width: 400px;
-  margin-top: 60px;
-}
-#searchDiv_2 {
-  display: none;
-}
-.tdn {
-  text-decoration: none;
-  color:black
-}
-#productNavbar, #productNavbar_2 {
-  background-color: black
-}
-.search {
-  color: black
-}
-.billingInfo {
-  background-color: rgb(179, 222, 226); 
-  max-width: 500px;
-  border-radius: 20px;
-}
-#productNavbar_2 {
-  display: none;
-}
-#topMyCart {
-  display: none;
-}
-#bottomMyCart {
-  margin-left:400px
-}
-/* #collapsibleNavbar_2 a:hover {
-  background-color: #003471;
-  border-radius: 10px;
-}  */
-#HomeNavbar a:hover {
-  background-color: #fc0303;
-  color: white;
-  border-radius: 10px;
-}
-#HomeNavbarUl {
-  margin-top: 60px;
-}
-@media screen and (max-width: 1000px) {
-  #searchDiv_1 {
-    margin: 0 10px 30px 0;
+  li a:hover {
+    color:aqua
   }
-  #topMyCart {
-    display: block;
-  }
-  #productNavbar {
-    display: none;
-  }
-  #productNavbar_2 {
-    display: block;
-  }
-}
-@media screen and (max-width: 800px) {
-     .head {
-       padding: 0;
-     } 
-     ._head {
-      font-size: 25px;
-     }
-     ._headB {
-      font-size: 12px;
-     }
-   }
-
-   @media screen and (max-width: 600px) {
-    #HomeNavbarUl {
-      margin-top: 8px;
-    }
-   }
-
-   @media screen and (max-width: 500px) {
-    ._head {
-      font-size: 20px;
-     }
-     ._headB {
-      font-size: 10px;
-     }
-     #searchDiv_1 {
-      display: none;
-     }
-     #searchDiv_2 {
-      display: block;
-     }
-   }
-   
-  
-   
-   @media screen and (max-width: 400px) {
-    .ftr_subsc {
-      font-size: 16px;
-    }
-    .f {
-      padding: 0;
-    }
-    .hideOnMobile {
-      display: none;
-    }
-   }
-
-   /* #mycart {
-    animation-name: moveMyCart;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-   }
-   @keyframes moveMyCart {
-    0% {color: #0185CF;}
-    100% {color: #01cf0b;text-shadow: 5px 5px 5px #141414;margin-left: 300px;}
-  } */
-   
-   @keyframes changeColor {
-    0% {color: #0185CF;text-shadow: 5px 5px 5px #141414;}
-    50% {color: black;}
-    100% {color: #0185CF;text-shadow: 5px 5px 5px #141414;}
-  }
-
-  .hide {
-    display: none;
-  }
-  
-  .gallery:hover{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
-
-  #firstHeading {
-    animation-name: changeColor;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-  }
-
-  #map {
-    height: 100%;
-  }
-  
-   @media screen and (max-width: 330px) {
-   #frame {
-      height: 300px;
-      width: 300px;
-    }
-   }
-
-  @media screen and (max-width: 300px) {
-    .our_services,
-    .ftr_head {
-      font-size: 25px;
-    }
-    .ftr_subsc {
-      font-size: 13px;
-    }
-    
-    .ftr_disc,
-    .about_disc,
-    .ftr_address {
-      font-size: 13px;
-      
-    }
-  }
-
-  @media screen and (max-width: 280px) {
-    .logo {
-      width: 200px;
-      height: auto;
-    }
-  }
-  
