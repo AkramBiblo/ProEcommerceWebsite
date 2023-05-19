@@ -1,0 +1,20 @@
+<body id="adminBg">
+
+   <div class="container mt-3">
+    <div class="container d-flex justify-content-end">
+        <button onclick="logout()" id="logoutBtn" class="btn btn-light s" href="/logout">Logout</button>
+    </div>
+    <div class="container text-center bg-warning border" style="max-width: 300px; padding: 20px; margin: auto; border-radius: 10px;">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action list-group-item-success" style="text-decoration: none;" href="/forms_2">Product Upload Form for Store</a>
+            <a class="list-group-item list-group-item-action list-group-item-success" style="text-decoration: none;" href="/products/allForStore">All Products</a>
+        </div>
+    </div>
+   </div>
+    <script>
+        function logout() {
+    document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    location.href = '/'
+    }
+    </script>
+</body>

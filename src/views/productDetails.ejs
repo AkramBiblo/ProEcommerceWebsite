@@ -1,0 +1,192 @@
+<body>
+    <%- include('./partials/header.ejs') %>
+    <% if (locals.message !== null) { if (locals.message.Type == 'Accessories'){%> 
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col">
+                    <div id="demo" class="carousel slide mt-5" data-ride="carousel">
+
+                        <!-- The slideshow -->
+                        <div class="carousel-inner text-center">
+                            <div class="carousel-item active">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_1 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_2 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_3 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                        </div>
+
+                        <!-- Left and right controls -->
+                        <a class="carousel-control-pv" href="#demo" data-slide="pv">
+                            <span class="carousel-control-pv-icon bg-dark"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demo" data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="container">
+                        <h2><%= message.Title %></h1>
+                    </div>
+                    <div class="container mt-4">
+                        <h3>Price: <%= message.Price %></h5>
+                    </div>
+                    <div class="container p0 mt-4">
+                        <ul class="detailsUl">
+                            <li>
+                                <p class="font_14px">Model: <%= message.Model %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Description: <%= message.Description %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Color: <%= message.Color %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">On Stock: <%= message.Qty %></p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="container d-flex justify-content-end">
+                        <button type="button" name="addToCart" productid="<%= message.Id %>" brand="<%= message.Brand %>" productTitle="<%= message.Title %>" model="<%= message.Model %>" price="<%= message.Price %>" class="btn btn-outline-dark addToCart">
+                            <span class="fab fa-opencart"></span> Add to cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <% } else { %> 
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col">
+                    <div id="demo" class="carousel slide mt-5" data-ride="carousel">
+
+                        <!-- The slideshow -->
+                        <div class="carousel-inner text-center">
+                            <div class="carousel-item active">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_1 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_2 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                            <div class="carousel-item">
+                                <img class="img-fluid" src="/uploadedFiles/<%= message.File_3 %>" height="350px" width="350px"
+                                    alt="Laptop">
+                            </div>
+                        </div>
+
+                        <!-- Left and right controls -->
+                        <a class="carousel-control-pv" href="#demo" data-slide="pv">
+                            <span class="carousel-control-pv-icon bg-dark"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demo" data-slide="next">
+                            <span class="carousel-control-next-icon bg-dark"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="container">
+                        <h2><%= message.Title %></h1>
+                    </div>
+                    <div class="container mt-4">
+                        <h3><%= message.Price %></h5>
+                    </div>
+                    <div class="container p0 mt-4">
+                        <ul class="detailsUl">
+                            <li>
+                                <p class="font_14px">Model: <%= message.Model %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Processor: <%= message.Processor %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">RAM: <%= message.Memory %>M</p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Storage: <%= message.Storage %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Display: <%= message.DisplayType %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">OS: <%= message.OS %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">Color: <%= message.Color %></p>
+                            </li>
+                            <li>
+                                <p class="font_14px">On Stock: <%= message.Qty %></p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-end">
+                <button type="button" name="addToCart" productid="<%= message.Id %>" brand="<%= message.Brand %>" productTitle="<%= message.Title %>" model="<%= message.Model %>" price="<%= message.Price %>" class="btn btn-outline-dark addToCart">
+                    <span class="fab fa-opencart"></span> Add to cart
+                </button>
+            </div>
+            <div class="container">
+                <h3>Tech Specs</h3>
+            </div>
+            <div class="container border p-3 mt-3">
+                <p class="font_14px"><strong>Processor</strong> - <%= message.Processor %></p>
+                <hr>
+                <p class="font_14px"><strong>Processor family</strong> - <%= message.ProcessorFamily %></p>
+                <hr>
+                <p class="font_14px"><strong>Memory</strong> - <%= message.Memory %></p>
+                <hr>
+                <p class="font_14px"><strong>Storage</strong> - <%= message.Storage %></p>
+                <hr>
+                <p class="font_14px"><strong>Graphics Card</strong> - <%= message.GraphicsCard %></p>
+                <hr>
+                <p class="font_14px"><strong>Display Type</strong> - <%= message.DisplayType %></p>
+                <hr>
+                <p class="font_14px"><strong>Webcam</strong> - <%= message.Webcam %></p>
+                <hr>
+                <p class="font_14px"><strong>Operation System</strong> - <%= message.OS %></p>
+                <hr>
+                <p class="font_14px"><strong>Audio</strong> - <%= message.Audio %></p>
+                <hr>
+                <p class="font_14px"><strong>Fingerprint Reader</strong> - <%= message.FR %></p>
+                <hr>
+                <p class="font_14px"><strong>Wireless</strong> - <%= message.Wireless %></p>
+                <hr>
+                <p class="font_14px"><strong>Keyboard Feature</strong> - <%= message.KF %></p>
+                <hr>
+                <p class="font_14px"><strong>Interface</strong> - <%= message.Interface %></p>
+                <hr>
+                <p class="font_14px"><strong>Battery</strong> - <%= message.Battery %></p>
+                <hr>
+                <p class="font_14px"><strong>Backlit Keyboard</strong> - <%= message.BK %></p>
+                <hr>
+                <p class="font_14px"><strong>Dimensions</strong> - <%= message.Dimensions %></p>
+                <hr>
+                <p class="font_14px"><strong>Weight</strong> - <%= message.Weight %></p>
+                <hr>
+                <p class="font_14px"><strong>Color</strong> - <%= message.Color %></p>
+                <hr>
+                <p class="font_14px"><strong>Pointer Device</strong> - <%= message.PD %></p>
+                <hr>
+                <p class="font_14px"><strong>Remark</strong> - <%= message.Remark %></p>
+            </div>
+            <div class="container mt-3">
+                <h3>Description</h3>
+            </div>
+            <div class="container border p-4">
+                <p><%= message.FullDesc %></p>
+            </div>
+        </div>
+    <% }} %> 
+        <%- include('./partials/footer.ejs') %>
+</body>

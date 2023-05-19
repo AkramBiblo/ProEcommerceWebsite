@@ -1,0 +1,156 @@
+<body>
+    <%- include('./partials/header.ejs') %>
+    <div class="container text-center">
+      <h4>My Cart</h4>
+    </div>
+    <div class="container" id="mobileMyCart">
+      
+    </div>
+    <!-- <div class="container">
+      <table class="table table-light table-hover table-bordered">
+        <thead class="thead-dark text-center">
+          <tr>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Remove items</th>
+          </tr>
+        </thead>
+        <tbody class="text-center" id="cartItems_2">
+          
+        </tbody>
+      </table>
+    </div> -->
+    <div class="container d-flex justify-content-end">
+      <h5 class="m-3">Total Price: <span id="totalCartPrice_2" value="0"></span></h5>
+      <a href="/checkout" type="button" id="checkoutBtn_2" value="0" class="btn btn-outline-dark btn-sm m-3">Checkout</a>
+    </div>
+
+      <script>
+        if (document.cookie) {
+        let decodedCookie = decodeURIComponent(document.cookie);
+                      let cartD = decodedCookie.slice(9);
+                      let ca = cartD.split('+');
+                      let tPrice = 0
+                      for (let i = 0; i < ca.length; i++) {
+                        const e = ca[i];
+                        let arr = e.split(',')
+                        let totalPrice = Number(arr[6])
+                        tPrice += totalPrice
+                        $('#mobileMyCart').append(`
+                        <div class="container border mt-2 p-2" style="border-radius:10px" remove_2="${arr[0]}">
+                          <h5>Item Id: ${arr[0]}</h5>
+                          <hr>
+                        <p><strong>Name: </strong> ${arr[1]}</p>
+                        <p><strong>Model: </strong> ${arr[2]}</p>
+                        <p><strong>Brand: </strong> ${arr[3]}</p>
+                        <p><strong>Qty: </strong> <input onchange="cal(this.value, ${arr[5]}, ${arr[0]})" type='number' value="${arr[4]}" min="1"/></p>
+                        <p><strong>Unit Price: </strong> ${arr[5]}</p>
+                        <p><strong>Total Price: </strong> <span cAmount_2="${arr[0]}">${arr[6]}</span></p>
+                        <button onclick="removeCartItem(${arr[0]})" class="btn btn-outline-danger">Remove</button>
+                        </div>
+                        `)
+                      }
+                        $('#totalCartPrice_2').val(tPrice)
+                        $('#totalCartPrice_2').text(tPrice)
+                        $('#checkoutBtn_2').val(tPrice)
+      }
+
+      function cal(v, a, id) {
+  let val = Number(v)
+  let amount = Number(a)
+  let totalAmount = val * amount;
+  let GrandAmount = 0;
+  document.querySelectorAll(`td[cAmount_2='${id}']`)[0].innerHTML = totalAmount;
+  let decodedCookie = decodeURIComponent(document.cookie);
+                      let cartD = decodedCookie.slice(9);
+                      if (cartD.includes("+") == true) {
+                          let ca = cartD.split('+');
+                          let cookieData = [];
+                          
+                        for (let i = 0; i < ca.length; i++) {
+                          const e = ca[i];
+                          let arr = e.split(',')
+                          if (arr[0] == id) {
+                            arr[4] = val
+                            arr[6] = totalAmount
+                            let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                            GrandAmount+= totalAmount;
+                            if (i == 0) {
+                              cookieData.push(data)
+                            } else {
+                              cookieData.push('+' + data)
+                            }
+                          } else {
+                            let singleAmount = Number(arr[6])
+                            GrandAmount+= singleAmount;
+                            if (i == 0) {
+                              let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                              cookieData.push(data)
+                            } else {
+                              let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                              cookieData.push('+' + data)
+                            }
+                          }
+                        }
+                        
+                        document.cookie = `cartData=${cookieData};path=/;`;
+                      } else {
+                        let arr = cartD.split(',')
+                        arr[4] = val
+                        arr[6] = totalAmount
+                        GrandAmount+= totalAmount;
+                        let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                        document.cookie = `cartData=${data};path=/;`;
+                      }
+                      
+                      
+                 document.getElementById('totalCartPrice').innerHTML = GrandAmount;   
+                 document.getElementById('totalCartPrice_2').innerHTML = GrandAmount;   
+}
+
+ function removeCartItem(id) {
+  let pid = Number(id)
+  document.querySelectorAll(`tr[remove_2="${id}"]`)[0].remove()
+  
+  let decodedCookie = decodeURIComponent(document.cookie);
+                      let cartD = decodedCookie.slice(9);
+                      
+                      if (cartD.includes("+") == true) {
+                          let ca = cartD.split('+');
+                          let cookieData = [];
+                          let GrandAmount = 0;
+                        for (let i = 0; i < ca.length; i++) {
+                          const e = ca[i];
+                          let arr = e.split(',')
+                          let pidInArr = Number(arr[0])
+                          if (pid !== pidInArr) {
+                            let singleAmount = Number(arr[6]);
+                            GrandAmount+= singleAmount
+                            if (i == 0) {
+                              let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                              cookieData.push(data)
+                            } else if (cookieData.length > 0) {
+                              let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                              cookieData.push('+' + data)
+                            } else {
+                              let data = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]]
+                              cookieData.push(data)
+                            }
+                          }
+                        }
+                        document.cookie = `cartData=${cookieData};path=/;`;
+                        document.getElementById('totalCartPrice').innerHTML = GrandAmount;  
+                      } else {
+                        document.cookie = "cartData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        document.getElementById('totalCartPrice').innerHTML = 0; 
+                      }
+                      
+                      
+                 
+ }
+ 
+      </script>
+</body>

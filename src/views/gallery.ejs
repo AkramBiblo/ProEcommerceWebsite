@@ -1,0 +1,238 @@
+<body>
+    <%- include('./partials/header.ejs') %>
+    <div class="container">
+        <a class="btn btn-outline-dark listView">List View</a>
+        <a class="btn btn-outline-dark gridView">Grid View</a>
+    </div>
+
+    <div class="container-fluid listViewDiv h">
+        <div class="row">
+            <div class="col">
+                <div class="col-lg d-flex justify-content-end searchDiv_1">
+                      <div class="container sticky" id="searchDiv_1">
+                        <div class="input-group">
+                          <input id="search_input_2" name="search_input_2" type="text" class="form-control" placeholder="Search Products">
+                          <div class="input-group-append">
+                            <button name="search_submit_button_2" class="btn btn-info" type="submit">Search</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+            </div>
+        </div>
+        
+        <div class="container mt-4">
+            <% if (locals.message != null) {%> 
+            <table class="table bg-dark text-light">
+              <thead class="thead-light">
+                <tr class="">
+                  <th>Image</th>
+                  <th>PID</th>
+                  <th>Model</th>
+                  <th>Type</th>
+                  <th>Brand</th>
+                  <th>MRP</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+    
+                <% message.forEach(function(item) {%>
+                  <tr>
+                      <td><img style="border-radius: 8px; max-height: 70px;max-width: 70px;" src="/uploadedFiles/<%= item.File_1 %>" alt="Image"></td>
+                      <td><%= item.Id %></td>
+                      <td><%= item.name %></td>
+                      <td><%= item.type %></td>
+                      <td><%= item.brand %></td>
+                      <td><%= item.mrp %></td>
+                      <td><button type="button" name="addToCart" productid="<%= item.Id %>" brand="<%= item.brand %>" productTitle="<%= item.type %>" model="<%= item.name %>" price="<%= item.mrp %>" class="btn btn-outline-light btn-sm addToCart">
+                            <span class="fab fa-opencart"></span> Add to cart
+                          </button></td>
+                      </tr>
+                 <%   
+                }) } %> 
+              </tbody>
+            </table>
+          </div>
+    
+    </div>
+    
+        <div class="container-fluid gridViewDiv">
+            <div class="container">
+                <div class="container text-center mt-4">
+                    <h5 for="vol">Filter by brand</h5>
+                </div>
+                <div class="container-fluid mt-3" id="filterDiv-1">
+                    <form action="#" class="d-flex justify-content-center" method="get">
+                        <div class="container border text-center changeColorOnHover">
+                            <input type="checkbox" class="filterByBrand" name="Samsung"> &nbsp;&nbsp; Samsung
+                        </div>
+                        <div class="container border text-center changeColorOnHover">
+                            <input type="checkbox" class="filterByBrand" name="Walton"> &nbsp;&nbsp; Walton
+                        </div>
+                        <div class="container border text-center changeColorOnHover">
+                            <input type="checkbox" class="filterByBrand" name="Vision"> &nbsp;&nbsp; Vision
+                        </div>
+                        <div class="container border text-center changeColorOnHover">
+                            <input type="checkbox" class="filterByBrand" name="Singer"> &nbsp;&nbsp; Singer
+                        </div>
+                        <div class="container border text-center changeColorOnHover">
+                            <input type="checkbox" class="filterByBrand" name="Konka"> &nbsp;&nbsp; Konka
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container-fluid d-flex flex-wrap" id="filterResult_2">
+    
+            </div>
+            <div class="container-fluid d-flex flex-wrap p-3">
+                    <% if (locals.message !== null) { message.forEach(function(product) { %> 
+                        <div class="gallery border p-2 m-1" style="width:270px;">
+                        <div class="container-fluid text-center">
+                            <h5><%= product.name %></h5>
+                        </div>
+                        <div class="p-2">
+                            <a href="/details/<%= product.Id %>">
+                                <img src="/uploadedFiles/<%= product.File_1 %>" class="img-fluid rounded" code="<%= product.Id %>" style="max-width: 200px;max-height: 200px;" alt="Product Image">
+                            </a>
+                        </div>
+                        <div class="col p-2">
+                                <p><strong>Product Code :</strong> <%= product.Id %></p>
+                                <p><strong>Brand :</strong> <%= product.brand %></p>
+                                <p><strong>Model :</strong> <%= product.name %></p>
+                                <p><strong>Description :</strong> <%= product.description %></p>
+                                <p><strong>Price (BDT) :</strong> <%= product.mrp %></p>
+                                <p><strong>Qty :</strong> <%= product.Qty %></p>
+                                <button type="button" name="addToCart" productid="<%= product.Id %>" brand="<%= product.brand %>" productTitle="<%= product.type %>" model="<%= product.name %>" price="<%= product.mrp %>" class="btn btn-outline-dark btn-sm addToCart">
+                                    <span class="fab fa-opencart"></span> Add to cart
+                                </button>
+                        </div>
+                    </div>
+                    <% })} %> 
+                
+            </div>
+        </div>
+
+        <%- include('./partials/footer.ejs') %>
+
+        <script>
+            
+
+            $(document).ready(() => {
+                $('.listView').click(()=> {
+                    $('.gridViewDiv').addClass('h')
+                    $('.listViewDiv').removeClass('h')
+                })
+
+                $('.gridView').click(()=> {
+                    $('.listViewDiv').addClass('h')
+                    $('.gridViewDiv').removeClass('h')
+                })
+
+                fillTheCheckBox()
+                function fillTheCheckBox() {
+                    
+                    let brands = ['Asus', 'Acer', 'Apple', 'Anatel', 'ARCTIC', 'Au-Optronics',
+                                'AzureWave', 'BarraCuda', 'BOE', 'Chicony', 'Chimei Innolux Corp', 'Compaq','Dell','Delta','FIRECUDA','FSP GROUP INC',
+                                'Gigabyte','Hasee','HGST','HP','HP-COMPAQ','HUAWEI','IBM','Lenovo','LG','LITE-ON','Micron','Microsoft Surface','NANYA',
+                                'Netac','Onten','Qualcomm Atheros','Ralink','Razer','Realtek','Sumsung','SAMSWEET','SanDisk','Seagate','SHARP','SK Hynix',
+                                'Sony','SSK','Toshiba','Uogic','Western', 'Digital','WiWU','Broadcom','Crucial','Fujitsu','Google','Intel','Microsoft','MSI','WIT','Xiaomi',
+                            ]
+                    for (let i = 0; i < brands.length; i++) {
+                        const elem = brands[i];
+                        $('#brandFilterForm').append(`<div class="container">
+                                <input type="checkbox" name="${elem}"> &nbsp;&nbsp; ${elem}
+                            </div>`)
+                    }
+                }
+    
+                $('#showlist').click(() => {
+                    if ($('#filterDiv-1').hasClass('hide')) {
+                        $('#filterDiv-1').removeClass('hide')
+                    } else {
+                        $('#filterDiv-1').addClass('hide')
+                    }
+                    
+                })
+                
+                $("input[type='checkbox']").click(function (e) {
+                        let targetCheckbox = e.target
+                        let brand = targetCheckbox.getAttribute('name')
+                        if ($(this).is(':checked')) {
+                            $.ajax({
+                                url: `/search/filterbybrand/${brand}`,
+                                method: 'post',
+                                data: {brand:brand},
+                                success: (result) => {
+                                    if (typeof(result) == 'string') {
+                                        alert(result)
+                                    } else {
+                                        $('#renderProdDiv').empty()
+                                        $('#caruselDiv').empty()
+                                        $('#filterResult_2').prepend(`<div class="container-fluid d-flex flex-wrap" id="${brand}">
+                                        ${result}
+                                        </div>`);
+                                        $('html, body').animate({
+                                        scrollTop: $("#filterResult_2").offset().top
+                                        });
+                                    }
+                                    
+                                }
+                            })
+                        } else {
+                            $(`#${brand}`).remove()
+                        }
+                    });
+                    
+                    $("button[name='search_submit_button_2']").click(function (e) {
+    
+                        let searchInput = $('#search_input_2').val();
+                        $.ajax({
+                                url: `/search/fromAdminAllProductsForCustomer`,
+                                method: 'post',
+                                data: {brand:searchInput},
+                                success: (result) => {
+                                    result.forEach(element => {
+                                        $('tbody').prepend(element)
+                                    });                                
+                                }
+                            })
+                    });
+
+            })
+
+            $(document).on('click','.addToCart',function(e){
+                let TargetName = e.target.getAttribute('name')
+                    let PT = e.target.getAttribute('productTitle')
+                    let unitPrice = e.target.getAttribute('price')
+                    let totalPrice = unitPrice;
+                    let brand = e.target.getAttribute('brand')
+                    let PID = e.target.getAttribute('productid')
+                    let qty = 1;
+                    let model = e.target.getAttribute('model')
+                    let data = [PID,PT,model,brand, qty, unitPrice, totalPrice]
+                    console.log(data)
+                    if (document.cookie) {
+                      // document.cookie = "cartData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      let decodedCookie = decodeURIComponent(document.cookie);
+                      let cartD = decodedCookie.slice(9);
+                      let ca = cartD.split('+');
+                      for (let i = 0; i < ca.length; i++) {
+                        const e = ca[i];
+                        let arr = e.split(',')
+                        if (arr[0] == PID) {
+                          return alert("This item already added to your cart!")
+                        }
+                      }
+                        document.cookie = `cartData=${cartD + '+' + data};path=/;`;
+                        alert('Product added to your cart successfully!')
+                    } else {
+                      document.cookie = `cartData=${data};path=/;`;
+                      alert('Product added to your cart successfully!')
+                      // window.location.reload()
+                    }
+            });
+            
+        </script>
+       
+</body>

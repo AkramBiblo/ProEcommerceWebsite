@@ -1,0 +1,144 @@
+<body>
+  <%- include('./partials/header.ejs') %>
+
+  <div class="container f" id="goTotop">
+    <div class="row">
+      <div class="col-md p-4">
+        <h1 class="features">Store Location</h1>
+        <ul style="list-style-type: disc">
+          <li>
+            <a
+              name="warehouse"
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              >Warehouse</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              name="nbs"
+              >Noyabazar Showroom</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              val="2"
+              >College Bazar Showroom</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              val="3"
+              >Vatiary Showroom</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              val="4"
+              >Bandartila Showroom</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              val="5"
+              >Matiranga Showroom</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              style="text-decoration: none; color: black"
+              class="store"
+              val="6"
+              >Sharkarhat Showroom</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="col">
+        <!--Warehouse-->
+        <iframe
+          class="storeLocation"
+          name="warehouse"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.9587343379576!2d91.77052834118467!3d22.355186944859994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd96b877cdf11%3A0x5d1a760821d41d75!2sNurjahan%20Group.!5e0!3m2!1sen!2sbd!4v1678458939091!5m2!1sen!2sbd"
+          width="600"
+          height="450"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpoacy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+  <div class="container d-flex justify-content-end mb-5">
+    <a
+      href="#goTotop"
+      class="btn btn-outane-info"
+      data-toggle="tooltip"
+      data-placement="left"
+      title="Go to top!"
+      ><i class="fas fa-arrow-alt-circle-up"></i
+    ></a>
+  </div>
+
+  <%- include('./partials/footer.ejs') %>
+
+  <script>
+    $(document).ready(() => {
+      let location = [
+        <iframe
+          class="storeLocation hide warehouse"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.9587343379576!2d91.77052834118467!3d22.355186944859994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd96b877cdf11%3A0x5d1a760821d41d75!2sNurjahan%20Group.!5e0!3m2!1sen!2sbd!4v1678458939091!5m2!1sen!2sbd"
+          width="600"
+          height="450"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpoacy="no-referrer-when-downgrade"
+        ></iframe>,
+        <iframe
+          class="storeLocation hide nbs"
+          src="https://www.google.com/maps/embed?pb=!3m2!1sen!2sbd!4v1678463446893!5m2!1sen!2sbd!6m8!1m7!1sG92XCU5syf__lwM6ZY291w!2m2!1d22.34528851608543!2d91.7875553606445!3f241.82705012325266!4f1.501626857012269!5f0.7820865974627469"
+          width="600"
+          height="450"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpoacy="no-referrer-when-downgrade"
+        ></iframe>,
+      ];
+
+      $("a").click((e) => {
+        let name = e.target.getAttribute("name");
+        if (name == "warehouse") {
+          $("iframe").attr(
+            "src",
+            "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.9587343379576!2d91.77052834118467!3d22.355186944859994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd96b877cdf11%3A0x5d1a760821d41d75!2sNurjahan%20Group.!5e0!3m2!1sen!2sbd!4v1678458939091!5m2!1sen!2sbd"
+          );
+        } else if (name == "nbs") {
+          $("iframe").attr(
+            "src",
+            "https://www.google.com/maps/embed?pb=!3m2!1sen!2sbd!4v1678463446893!5m2!1sen!2sbd!6m8!1m7!1sG92XCU5syf__lwM6ZY291w!2m2!1d22.34528851608543!2d91.7875553606445!3f241.82705012325266!4f1.501626857012269!5f0.7820865974627469"
+          );
+        }
+      });
+    });
+  </script>
+</body>

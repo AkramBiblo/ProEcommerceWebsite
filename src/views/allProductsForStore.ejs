@@ -1,0 +1,298 @@
+<body>
+  <div class="container-fluid">
+    <div class="container">
+      <a
+        class="btn btn-outline-dark"
+        style="text-decoration: none"
+        href="/products/allForStore"
+        >All Products</a
+      >
+      <a
+        class="btn btn-outline-dark"
+        style="text-decoration: none"
+        href="/store"
+        >Store</a
+      >
+    </div>
+    <div class="container border p-2 bg-info mt-4">
+      <div class="container text-center mt-4">
+        <h5 for="vol">Filter by Category</h5>
+      </div>
+      <div class="container mt-2" style="width: 500px">
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <h6><label for="Type">Product Type</label></h6>
+          </div>
+          <div class="col-lg-8">
+            <!-- <input type="text" class="form-control" name="Type" placeholder="Type" value="<% if (locals.message != null) {%><%= message.Type %><% } %>" required> -->
+            <div class="form-group">
+              <select class="form-control" id="Type" name="Type">
+                <option>Select Product Type</option>
+                <option value="Refrigerator & Freezer">
+                  Refrigerator & Freezer
+                </option>
+                <option value="Television">Television</option>
+                <option value="Air Conditioner">Air Conditioner</option>
+                <option value="Mobile">Mobile</option>
+                <option value="Computer">Computer</option>
+                <option value="Washing Machine">Washing Machine</option>
+                <option value="Oven">Microwave & Electric Oven</option>
+                <!-- <option value="Blender">Blender & Grinder</option> -->
+                <option value="HAP">Home Appliances</option>
+                <option value="KAP">Kitchen Appliances</option>
+                <option value="Fan">Fan</option>
+                <option value="Light">LED Light</option>
+                <option value="ElectricalAccess">Electrical Accessories</option>
+                <option value="Cables">Cables</option>
+                <option value="E-Bike">E-Bike</option>
+                <option value="Compressor">Compressor</option>
+                <option value="Battery">Battery</option>
+                <option value="Hardware & Sanitary Solutions">
+                  Hardware & Sanitary Solutions
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <h6><label for="brand">Brand</label></h6>
+          </div>
+          <div class="col-lg-8">
+            <div class="form-group">
+              <select class="form-control" id="brand" name="brand">
+                <option>Select Brand</option>
+                <option value="Walton">Walton</option>
+                <option value="Vision">Vision</option>
+                <option value="Samsung">Samsung</option>
+                <option value="Gree">Gree</option>
+                <option value="Singer">Singer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="container d-flex justify-content-end mt-4 mr-3">
+          <input
+            class="btn btn-success mr-2"
+            name="search_submit"
+            type="submit"
+            value="Search"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="container text-center mt-4">
+        <h5 for="vol">Filter by brand</h5>
+      </div>
+      <div class="container-fluid mt-3" id="filterDiv-1">
+        <form action="#" class="d-flex justify-content-center" method="get">
+          <div class="container border text-center changeColorOnHover">
+            <input type="checkbox" class="filterByBrand" name="Samsung" />
+            &nbsp;&nbsp; Samsung
+          </div>
+          <div class="container border text-center changeColorOnHover">
+            <input type="checkbox" class="filterByBrand" name="Walton" />
+            &nbsp;&nbsp; Walton
+          </div>
+          <div class="container border text-center changeColorOnHover">
+            <input type="checkbox" class="filterByBrand" name="Vision" />
+            &nbsp;&nbsp; Vision
+          </div>
+          <div class="container border text-center changeColorOnHover">
+            <input type="checkbox" class="filterByBrand" name="Singer" />
+            &nbsp;&nbsp; Singer
+          </div>
+          <div class="container border text-center changeColorOnHover">
+            <input type="checkbox" class="filterByBrand" name="Konka" />
+            &nbsp;&nbsp; Konka
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="container mt-2" id="filterResult_2"></div>
+
+    <div class="container mt-4" style="overflow-x: auto">
+      <% if (locals.message != null) { %>
+      <table class="table bg-info text-light">
+        <thead class="thead-light">
+          <tr class="">
+            <th>Model</th>
+            <th>Type</th>
+            <th>Brand</th>
+            <th>Qty</th>
+            <th>Add Poducts</th>
+            <th>Sold Out</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% message.forEach(function(item) {%>
+          <tr>
+            <td><%= item.name %></td>
+            <td><%= item.type %></td>
+            <td><%= item.brand %></td>
+            <td><%= item.Qty %></td>
+            <td>
+              <form action="/updateQtyFromStore" method="POST">
+                <input type="hidden" name="Id" value="<%= item.Id %>" />
+                <input type="hidden" name="Model" value="<%= item.name %>" />
+                <input type="text" name="Qty" style="width: 50px" />
+                <button type="submit" class="btn btn-outline-light">Add</button>
+              </form>
+            </td>
+            <td>
+              <form action="/soldOutQtyUpdateForStore" method="POST">
+                <input type="hidden" name="Id" value="<%= item.Id %>" />
+                <input type="hidden" name="Model" value="<%= item.name %>" />
+                <input type="text" name="Qty" style="width: 50px" />
+                <button type="submit" class="btn btn-outline-light">
+                  Sold Out
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    $(document).ready(() => {
+      $("input[type='submit']").click(function () {
+        let type = $("#Type").val();
+        let brand = $("#brand").val();
+        $.ajax({
+          url: `/search_store/filterbybrand`,
+          method: "post",
+          data: { brand: brand, type: type },
+          success: (result) => {
+            if (typeof result == "string") {
+              alert(result);
+            } else {
+              $("#filterResult_2")
+                .prepend(`<div class="container-fluid" id="${brand}">
+                                        <table class="table">
+        <thead class="thead-light">
+          <tr class="">
+            <th>Model</th>
+            <th>Type</th>
+            <th>Brand</th>
+            <th>Qty</th>
+            <th>Add Poducts</th>
+            <th>Sold Out</th>
+          </tr>
+        </thead>
+        <tbody>
+            ${result}
+            </tbody>
+      </table>
+                                        </div>`);
+              $("html, body").animate({
+                scrollTop: $("#filterResult_2").offset().top,
+              });
+            }
+          },
+        });
+      });
+
+      $("input[type='checkbox']").click(function (e) {
+        let targetCheckbox = e.target;
+        let brand = targetCheckbox.getAttribute("name");
+
+        if ($(this).is(":checked")) {
+          $.ajax({
+            url: `/search_store/filterbybrand/${brand}`,
+            method: "post",
+            data: { brand: brand },
+            success: (result) => {
+              if (typeof result == "string") {
+                alert(result);
+              } else {
+                $("#filterResult_2")
+                  .prepend(`<div class="container-fluid" id="${brand}">
+                                        <table class="table">
+        <thead class="thead-light">
+          <tr class="">
+            <th>Model</th>
+            <th>Type</th>
+            <th>Brand</th>
+            <th>Qty</th>
+            <th>Add Poducts</th>
+            <th>Sold Out</th>
+          </tr>
+        </thead>
+        <tbody>
+            ${result}
+            </tbody>
+      </table>
+                                        </div>`);
+                $("html, body").animate({
+                  scrollTop: $("#filterResult_2").offset().top,
+                });
+              }
+            },
+          });
+        } else {
+          $(`#${brand}`).remove();
+        }
+      });
+
+      $("button[name='search_submit_button_2']").click(function (e) {
+        let searchInput = $("#search_input_2").val();
+        $.ajax({
+          url: `/search/fromAdminAllProductsForCustomer`,
+          method: "post",
+          data: { brand: searchInput },
+          success: (result) => {
+            result.forEach((element) => {
+              $("tbody").prepend(element);
+            });
+          },
+        });
+      });
+    });
+
+    $(document).on("click", ".addToCart", function (e) {
+      let TargetName = e.target.getAttribute("name");
+      let PT = e.target.getAttribute("productTitle");
+      let unitPrice = e.target.getAttribute("price");
+      let totalPrice = unitPrice;
+      let brand = e.target.getAttribute("brand");
+      let PID = e.target.getAttribute("productid");
+      let qty = 1;
+      let model = e.target.getAttribute("model");
+      let data = [PID, PT, model, brand, qty, unitPrice, totalPrice];
+      console.log(data);
+      if (document.cookie) {
+        // document.cookie = "cartData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let cartD = decodedCookie.slice(9);
+        let ca = cartD.split("+");
+        for (let i = 0; i < ca.length; i++) {
+          const e = ca[i];
+          let arr = e.split(",");
+          if (arr[0] == PID) {
+            return alert("This item already added to your cart!");
+          }
+        }
+        document.cookie = `cartData=${cartD + "+" + data};path=/;`;
+        alert("Product added to your cart successfully!");
+      } else {
+        document.cookie = `cartData=${data};path=/;`;
+        alert("Product added to your cart successfully!");
+        // window.location.reload()
+      }
+    });
+
+    function takePrint() {
+      let result = document.getElementById("filterResult_2").innerHTML;
+      let body = document.body.innerHTML;
+      document.body.innerHTML = result;
+      window.print();
+      document.body.innerHTML = body;
+    }
+  </script>
+</body>

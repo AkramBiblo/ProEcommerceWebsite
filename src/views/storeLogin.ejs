@@ -1,0 +1,36 @@
+<body>
+    <div style="max-width: 400px;" class="container text-white bg-warning mt-5 border p-4">
+        <div class="container">
+            <h3>Store Login</h3>
+             
+        </div>
+        
+            <%- include('./partials/error.ejs') %>
+              
+        
+        <form action="/storeLogin" method="POST">
+            <div class="container mt-5">
+                <div class="row mt-3">
+                    <div class="col-lg-3">
+                        <h6><label for="id">login Id</label></h6>
+                    </div>
+                    <div class="col-lg-9">
+                        <input type="text" class="form-control" name="id" placeholder="Login Id" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-3">
+                        <h6><label for="password">Password</label></h6>
+                    </div>
+                    <div class="col-lg-9">
+                        <input type="text" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-end mt-4 mr-3">
+                    <input class="btn btn-success mr-2" name="submit" type="submit" value="Login">
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</body>

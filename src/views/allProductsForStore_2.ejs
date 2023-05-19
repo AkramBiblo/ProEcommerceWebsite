@@ -1,0 +1,104 @@
+<body>
+  <div class="row">
+    <div class="col">
+      <div class="container text-center mt-4 p-3">
+        <a class="btn btn-light admin-button" href="/store">Store Panel</a>
+        <a class="btn btn-light admin-button" href="/products/allForStore"
+          >All Products</a
+        >
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-lg d-flex justify-content-end searchDiv_1">
+        <div class="container sticky" id="searchDiv_1">
+          <div class="input-group">
+            <input
+              id="search_input"
+              name="search_input"
+              type="text"
+              class="form-control"
+              placeholder="Search Products"
+            />
+            <div class="input-group-append">
+              <button
+                name="search_submit_button"
+                class="btn btn-info"
+                type="submit"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid d-flex flex-wrap p0" id="filterResult"></div>
+  <%- include('./partials/error.ejs') %> <%-
+  include('./partials/successMsg.ejs') %>
+  <div class="container mt-4">
+    <% if (locals.message != null) { %>
+    <table class="table bg-dark text-light">
+      <thead class="thead-light">
+        <tr class="">
+          <th>PID</th>
+          <th>Model</th>
+          <th>Type</th>
+          <th>Brand</th>
+          <th>Qty</th>
+          <th>Add Poducts</th>
+          <th>Sold Out</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% message.forEach(function(item) {%>
+        <tr>
+          <td><%= item.Id %></td>
+          <td><%= item.name %></td>
+          <td><%= item.type %></td>
+          <td><%= item.brand %></td>
+          <td><%= item.Qty %></td>
+          <td>
+            <form action="/updateQtyFromStore" method="POST">
+              <input type="hidden" name="Id" value="<%= item.Id %>" />
+              <input type="hidden" name="Model" value="<%= item.name %>" />
+              <input type="text" name="Qty" style="width: 50px" />
+              <button type="submit" class="btn btn-outline-light">Add</button>
+            </form>
+          </td>
+          <td>
+            <form action="/soldOutQtyUpdateForStore" method="POST">
+              <input type="hidden" name="Id" value="<%= item.Id %>" />
+              <input type="hidden" name="Model" value="<%= item.name %>" />
+              <input type="text" name="Qty" style="width: 50px" />
+              <button type="submit" class="btn btn-outline-light">
+                Sold Out
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) } %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    $(document).ready(() => {
+      $("button[name='search_submit_button']").click(function (e) {
+        let searchInput = $("#search_input").val();
+        $.ajax({
+          url: `/search/fromStoreAllProducts`,
+          method: "post",
+          data: { brand: searchInput },
+          success: (result) => {
+            $("tbody").empty();
+            result.forEach((element) => {
+              $("tbody").prepend(element);
+            });
+          },
+        });
+      });
+    });
+  </script>
+</body>

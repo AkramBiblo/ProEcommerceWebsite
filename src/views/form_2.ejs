@@ -1,0 +1,485 @@
+<body>
+  <!-- Form  -->
+  <div class="container-fluid text-info bg-light mt-5 mb-2 border p-4">
+    <div class="container p-3">
+      <a class="btn btn-outline-dark admin-button" href="/store">Store Panel</a>
+    </div>
+    <div class="container text-center">
+      <h4>Product upload Form</h4>
+    </div>
+
+    <%- include('./partials/error.ejs') %> <%-
+    include('./partials/successMsg.ejs') %>
+
+    <form action="/file/fileProcess_2" method="POST">
+      <div class="container mt-4">
+        <div class="container mt-2" style="width: 500px">
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <h6><label for="Type">Product Type</label></h6>
+            </div>
+            <div class="col-lg-8">
+              <!-- <input type="text" class="form-control" name="Type" placeholder="Type" value="<% if (locals.message != null) {%><%= message.Type %><% } %>" required> -->
+              <div class="form-group">
+                <select class="form-control" id="Type" name="Type">
+                  <option>Select Product Type</option>
+                  <option value="Refrigerator & Freezer">
+                    Refrigerator & Freezer
+                  </option>
+                  <option value="Television">Television</option>
+                  <option value="Air Conditioner">Air Conditioner</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="Computer">Computer</option>
+                  <option value="Washing Machine">Washing Machine</option>
+                  <option value="Oven">Microwave & Electric Oven</option>
+                  <!-- <option value="Blender">Blender & Grinder</option> -->
+                  <option value="HAP">Home Appliances</option>
+                  <option value="KAP">Kitchen Appliances</option>
+                  <option value="Fan">Fan</option>
+                  <option value="Light">LED Light</option>
+                  <option value="ElectricalAccess">
+                    Electrical Accessories
+                  </option>
+                  <option value="Cables">Cables</option>
+                  <option value="E-Bike">E-Bike</option>
+                  <option value="Compressor">Compressor</option>
+                  <option value="Battery">Battery</option>
+                  <option value="Hardware & Sanitary Solutions">
+                    Hardware & Sanitary Solutions
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3" id="hiddenDiv"></div>
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <h6><label for="Title">Model</label></h6>
+            </div>
+            <div class="col-lg-8">
+              <input
+                type="text"
+                class="form-control"
+                name="Title"
+                placeholder="Model"
+                value="<% if (locals.message != null) {%><%= message.Title %><% } %>"
+                required
+              />
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <h6><label for="brand">Brand</label></h6>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-group">
+                <select class="form-control" name="brand">
+                  <option>Select Brand</option>
+                  <option value="Walton">Walton</option>
+                  <option value="Vision">Vision</option>
+                  <option value="Samsung">Samsung</option>
+                  <option value="Gree">Gree</option>
+                  <option value="Singer">Singer</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <h6><label for="color">Color</label></h6>
+            </div>
+            <div class="col-lg-8">
+              <input
+                type="text"
+                class="form-control"
+                name="color"
+                placeholder="Color"
+                value="<% if (locals.message != null) {%><%= message.color %><% } %>"
+              />
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <h6><label for="Qty">Quantity</label></h6>
+            </div>
+            <div class="col-lg-8">
+              <input
+                type="text"
+                class="form-control"
+                name="Qty"
+                placeholder="Quantity"
+                value="<% if (locals.message != null) {%><%= message.Qty %><% } %>"
+              />
+            </div>
+          </div>
+          <div class="container d-flex justify-content-end mt-4 mr-3">
+            <input
+              class="btn btn-success mr-2"
+              name="submit"
+              type="submit"
+              value="Upload"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    $(document).ready(() => {
+      $("#hiddenDiv").hide();
+      // $("#Type").change(()=> {
+      //     let type = $("#Type").val()
+      //     if (type == "Refrigerator & Freezer") {
+      //         $("#hiddenDiv").show();
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="Type">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>French Door Refrigerators</option>
+      //                                 <option>Side by Side Refrigerators</option>
+      //                                 <option>Base Freezer Refrigerators</option>
+      //                                 <option>Top Freezer Refrigerators</option>
+      //                                 <option>Mini Refrigerators</option>
+      //                                 <option>Bar Refrigerators</option>
+      //                                 <option>Business Refrigerators</option>
+      //                                 <option>Direct cool refrigerator</option>
+      //                                 <option>Non Frost refrigerator</option>
+      //                                 <option>Beverage Cooler</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`);
+      //     } else if (type == "Television") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Basic TV</option>
+      //                                 <option>Smart LED TV</option>
+      //                                 <option>Android LED TV</option>
+      //                                 <option>4K Ultra HD TV</option>
+      //                                 <option>TV Accessories</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Air Conditioner") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Inverter AC</option>
+      //                                 <option>Non Inverter AC</option>
+      //                                 <option>Cassette Type AC</option>
+      //                                 <option>Ceiling Type AC</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Mobile") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Smart Phone</option>
+      //                                 <option>Feature Phone</option>
+      //                                 <option>Android Phone</option>
+      //                                 <option>Tab</option>
+      //                                 <option>Button Phone</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Computer") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Desktop Computer</option>
+      //                                 <option>Gaming PC</option>
+      //                                 <option>Laptop</option>
+      //                                 <option>Monitor</option>
+      //                                 <option>CPU</option>
+      //                                 <option>Computer Hard Disk</option>
+      //                                 <option>RAM</option>
+      //                                 <option>Computer Power Supply</option>
+      //                                 <option>Processor</option>
+      //                                 <option>Battery</option>
+      //                                 <option>UPS</option>
+      //                                 <option>Graphics Card</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Washing Machine") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Front Loading</option>
+      //                                 <option>Top Loading</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Oven") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Microwave Oven</option>
+      //                                 <option>Electric Oven</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     }
+      //     // else if (type == "Blender") {
+      //     //     $("#hiddenDiv").show()
+      //     //     $("#hiddenDiv").empty();
+      //     //     $("#hiddenDiv").append(`<div class="col-lg-4">
+      //     //                     <h6><label for="TypeTv">Categore</label></h6>
+      //     //                 </div>
+      //     //                 <div class="col-lg-8">
+      //     //                     <div class="form-group">
+      //     //                         <select class="form-control" name="category">
+      //     //                             <option>Blender & Juicer</option>
+      //     //                             <option>Mixer Grinder</option>
+      //     //                         </select>
+      //     //                       </div>
+      //     //                 </div>`)
+      //     // }
+      //     else if (type == "HAP") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Air Cooler</option>
+      //                                 <option>Geyser</option>
+      //                                 <option>Iron</option>
+      //                                 <option>Kettle</option>
+      //                                 <option>Room Heater</option>
+      //                                 <option>Mosquito Bat</option>
+      //                                 <option>Toaster, Cake & Sandwich Maker</option>
+      //                                 <option>Rechargable Lamp & Torch</option>
+      //                                 <option>Voltage Stabilizer & Protector</option>
+      //                                 <option>Water Purifier & Dispenser</option>
+      //                                 <option>Trimmer, Shaver & Hair Clipper</option>
+      //                                 <option>Sewing Machine</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "KAP") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Gas Stove</option>
+      //                                 <option>Rice Cooker</option>
+      //                                 <option>Blender</option>
+      //                                 <option>Grinder</option>
+      //                                 <option>Induction, Infrared & Hot Plate Cooker</option>
+      //                                 <option>Kitchen Cookware</option>
+      //                                 <option>Pressure Cooker</option>
+      //                                 <option>Multi Cooker</option>
+      //                                 <option>Kitchen Hood</option>
+      //                                 <option>Roti Maker</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Fan") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Ceiling Fan</option>
+      //                                 <option>Mega Ceiling Fan</option>
+      //                                 <option>Rechargable Fan</option>
+      //                                 <option>Rechargable Wall Fan</option>
+      //                                 <option>Pedestal Fan</option>
+      //                                 <option>Floor Fan</option>
+      //                                 <option>Tornado Fan</option>
+      //                                 <option>Table Fan</option>
+      //                                 <option>Wall Fan</option>
+      //                                 <option>Exhaust Fan</option>
+      //                                 <option>Net Fan</option>
+      //                                 <option>Wall Mountain Orbit Fan</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Light") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Indoor</option>
+      //                                 <option>Outdoor</option>
+      //                                 <option>Smart Lighting</option>
+      //                                 <option>Portable</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "ElectricalAccess") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Gang Switch</option>
+      //                                 <option>Piano Switch</option>
+      //                                 <option>Circuit Breaker</option>
+      //                                 <option>DB Box</option>
+      //                                 <option>Extension Socket</option>
+      //                                 <option>Fan Hook Box</option>
+      //                                 <option>Smart Switchc</option>
+      //                                 <option>Holders & Ceiling Rose</option>
+      //                                 <option>uPVC Electric Pipe & Fittings</option>
+      //                                 <option>Hardware & Accessories</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Cables") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Low Voltage Cables (LT)</option>
+      //                                 <option>Building Wire</option>
+      //                                 <option>Submersible Cable</option>
+      //                                 <option>DC Cable</option>
+      //                                 <option>Communication Cable</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "E-Bike") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Rechargable E-Bike</option>
+      //                                 <option>Motor Bike</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Compressor") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Walpha Series</option>
+      //                                 <option>Kappa Series</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Battery") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>UPS Battery</option>
+      //                                 <option>Medium Size Battery</option>
+      //                                 <option>Small Size Battery</option>
+      //                                 <option>Motorcycle Battery</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     } else if (type == "Hardware & Sanitary Solutions") {
+      //         $("#hiddenDiv").show()
+      //         $("#hiddenDiv").empty();
+      //         $("#hiddenDiv").append(`<div class="col-lg-4">
+      //                         <h6><label for="TypeTv">Categore</label></h6>
+      //                     </div>
+      //                     <div class="col-lg-8">
+      //                         <div class="form-group">
+      //                             <select class="form-control" name="category">
+      //                                 <option>Generator</option>
+      //                                 <option>Water Pump</option>
+      //                                 <option>Weight Machine</option>
+      //                             </select>
+      //                           </div>
+      //                     </div>`)
+      //     }
+      // })
+
+      $(".flip").click(function () {
+        $("#panel").slideToggle();
+      });
+
+      $(".flip_2").click(function () {
+        $("#panel_2").slideToggle();
+      });
+
+      $("input[name='updateQty']").click(function (e) {
+        let id = $("input[name='PC_2']").val();
+        let model = $("input[name='model']").val();
+        let Qty = $("input[name='Qty']").val();
+
+        $.ajax({
+          url: `/updateQty`,
+          method: "post",
+          data: { Id: id, Qty: Qty, Model: model },
+          success: (result) => {
+            $("#showMsg_2").empty();
+            $("#showMsg_2").append(result);
+          },
+        });
+      });
+    });
+  </script>
+</body>

@@ -1,0 +1,69 @@
+<body>
+    <div class="row">
+        <div class="col">
+            <div class="container text-center mt-4 p-3">
+                <a class="btn btn-light admin-button" href="/he2023admin">Admin Panel</a>
+                <a class="btn btn-light admin-button" href="/products/all">All Products</a>
+            </div>
+        </div>
+        <div class="col">
+           
+        </div>
+    </div>
+    <%- include('./partials/error.ejs') %>
+
+    <div class="container mt-4">
+        <% if (locals.message != null) {         
+            message.forEach(function(item) {%>
+              <div class="container border mt-4" style="background-color: antiquewhite;">
+                
+              <p><strong>Customer Name: </strong> <%=item[0]%></p>
+              <p><strong>Customer Address: </strong> <%=item[1]%></p>
+              <p><strong>Contact: </strong> <%=item[2]%></p>
+              <div class="container d-flex justify-content-end">
+                <form action="/soldOutQtyUpdate" method="post">
+                  <%
+                      let itemName = [] 
+                      let itemQty = [] 
+                        for (let i = 0; i < item[4].length; i++) {
+                          const elem = item[4][i];
+                          itemName.push(elem[0])
+                          itemQty.push(elem[1])
+                          } %>
+                  <input type="hidden" name="itemName" value="<%=itemName%>">
+                  <input type="hidden" name="customerName" value="<%=item[0]%>">
+                  <input type="hidden" name="itemQty" value="<%=itemQty%>">
+                  <button class="btn btn-outline-dark admin-button" type="submit"> Order Complete</button>
+                </form>
+                </div>
+              <div class="container text-center">
+                <strong>Order Details</strong>
+                </div>
+              <table class="table table-hover ">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Model</td>
+                    <th>Qty</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                      <%
+                      
+                        for (let i = 0; i < item[4].length; i++) {
+                          const elem = item[4][i];
+                          %>
+                          <tr>
+                            <td><%= elem[0] %></td>
+                            <td><%= elem[1] %></td>
+                            </tr>
+                       <% }%>
+                      
+                  </tbody>
+                </table>
+                </div>
+          
+           <% }) } %> 
+      </div>
+
+</body>
