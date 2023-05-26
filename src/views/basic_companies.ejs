@@ -1,0 +1,251 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing Companies</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse">
+              <form action="/basic_new_company_upload" method="post">
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="name">Company Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="name" placeholder="Company Name" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="address">Address</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="address" placeholder="Address" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="mobile">Mobile</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="mobile" placeholder="Mobile" />
+                  </div>
+                </div>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+      </div>
+      <div id="editForm" class="container mt-3">
+
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Company/Supplier Name</th>
+              <th>Address</th>
+              <th>Mobile</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(company) {%>
+            <td><%= company.id %></td>
+            <td><%= company.name %></td>
+            <td><%= company.address %></td>
+            <td><%= company.mobile %></td>
+            <td>
+              <button cid="<%= company.id %>" name="edit" class="btn btn-warning">Edit</button>
+            </td>
+            <td>
+              <form action="/basic_company_delete" method="post">
+                <input name="cid" type="hidden" value="<%= company.id %>">
+                <button class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/basic_company_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (data) => {
+            $('tbody').empty()
+            $('tbody').prepend(
+              `<td>${data.id}</td>
+              <td>${data.name}</td>
+              <td>${data.address}</td>
+              <td>${data.mobile}</td>
+              <td>
+                <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+              </td>
+              <td>
+                <form action="/basic_company_delete" method="post">
+                    <input name="cid" type="hidden" value="${data.id}">
+                     <button class="btn btn-danger">Remove</button>
+                </form>
+              </td>
+            </tr>`
+            )
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/basic_company_edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Company</h5>
+              </div>
+              <form action="/basic_edit_company_update" method="post">
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="name">Company Name</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="hidden" class="form-control" name="cid" value="${data.id}"/>
+                  <input type="text" class="form-control" name="name" value="${data.name}"/>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="address">Address</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="address" value="${data.address}"/>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="mobile">Mobile</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="mobile" value="${data.mobile}"/>
+                </div>
+              </div>
+              <div class="container d-flex justify-content-end mt-4 mr-3">
+                <input class="btn btn-light mr-2" name="submit" type="submit" value="Edit" />
+                <input id="cancel" class="btn btn-light mr-2" name="cancel" type="button" value="Cancel" />
+              </div>
+              </form>
+              </div>`)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/basic_company_edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Company</h5>
+              </div>
+              <form action="/basic_edit_company_update" method="post">
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="name">Company Name</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="hidden" class="form-control" name="cid" value="${data.id}"/>
+                  <input type="text" class="form-control" name="name" value="${data.name}"/>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="address">Address</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="address" value="${data.address}"/>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="mobile">Mobile</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="mobile" value="${data.mobile}"/>
+                </div>
+              </div>
+              <div class="container d-flex justify-content-end mt-4 mr-3">
+                <input class="btn btn-light mr-2" name="submit" type="submit" value="Edit" />
+                <input id="cancel" class="btn btn-light mr-2" name="cancel" type="button" value="Cancel" />
+                </div>
+              </form>
+              </div>`)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })      
+
+
+    })
+  </script>
+</body>
