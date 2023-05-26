@@ -39,6 +39,19 @@ router.get("/categories", (req, res) => {
     });
   });
 });
+
+router.get("/color", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+  con.query(sql, (err, result) => {
+    res.render("basic_color", {
+      message: result,
+      title: "Color",
+    });
+  });
+});
+
 router.get("/he2023admin", (req, res) => {
   res.render("admin", { title: "admin" });
 });
@@ -76,7 +89,6 @@ router.post("/basic_new_company_upload", (req, res) => {
         title: "Companies",
       });
     });
-    // res.send("New company added successfully!")
   })
 });
 
@@ -97,6 +109,23 @@ router.post("/basic_new_category_upload", (req, res) => {
   })
 });
 
+router.post("/basic_new_color_upload", (req, res) => {
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `INSERT INTO basic_module (module, name) VALUES ("color", "${name}")`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_color", {
+        successMsg: "New color added successfully!",
+        message: result,
+        title: "Ccolor",
+      });
+    });
+  });
+});
+
 router.post("/basic_company_delete", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
@@ -111,7 +140,6 @@ router.post("/basic_company_delete", (req, res) => {
         title: "Companies",
       });
     });
-    // res.send("Company removed successfully!");
   });
 });
 
@@ -129,7 +157,23 @@ router.post("/basic_category_delete", (req, res) => {
         title: "Category",
       });
     });
-    // res.send("Company removed successfully!");
+  });
+});
+
+router.post("/basic_color_delete", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM basic_module WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_color", {
+        successMsg: "Color removed successfully!",
+        message: result,
+        title: "Color",
+      });
+    });
   });
 });
 
@@ -144,6 +188,16 @@ router.post("/basic_company_edit", (req, res) => {
 });
 
 router.post("/basic_category_edit", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    res.send(result[0]);
+  });
+});
+
+router.post("/basic_color_edit", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -194,6 +248,24 @@ router.post("/basic_edit_category_update", (req, res) => {
 
 });
 
+router.post("/basic_edit_color_update", (req, res) => {
+  let cid = req.body.cid;
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `UPDATE basic_module SET name = "${name}" WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_color", {
+        successMsg: "Color updated successfully!",
+        message: result,
+        title: "Color",
+      });
+    });
+  });
+});
+
 router.post("/basic_company_search", (req, res) => {
   let SI = req.body.SI;
   const getDBInfo = require("../../db");
@@ -215,7 +287,21 @@ router.post("/basic_category_search", (req, res) => {
   let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
   con.query(sql, (err, result) => {
     if (result.length <= 0) {
-      res.send("No company found!");
+      res.send("No category found!");
+    } else {
+      res.send(result[0]);
+    }
+  });
+});
+
+router.post("/basic_color_search", (req, res) => {
+  let SI = req.body.SI;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
+  con.query(sql, (err, result) => {
+    if (result.length <= 0) {
+      res.send("No color found!");
     } else {
       res.send(result[0]);
     }
