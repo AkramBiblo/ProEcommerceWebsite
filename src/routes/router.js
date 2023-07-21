@@ -3,6 +3,7 @@ const router = express.Router();
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 const { resolve } = require("path");
+const e = require("express");
 router.use(cookieParser());
 // create application/json parser
 var jsonParser = bodyParser.json();
@@ -17,6 +18,7 @@ router.get("/", (req, res) => {
 router.get("/basic_module", (req, res) => {
   res.render("basic_module", { title: "Modules" });
 });
+
 router.get("/companies", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -28,6 +30,7 @@ router.get("/companies", (req, res) => {
     });
   });
 });
+
 router.get("/categories", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -52,18 +55,34 @@ router.get("/color", (req, res) => {
   });
 });
 
-router.get("/he2023admin", (req, res) => {
-  res.render("admin", { title: "admin" });
+router.get("/products", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module`;
+  con.query(sql, (err, result) => {
+    let company = [];
+    let category = [];
+    result.forEach(e => {
+      if (e.module == "company") {
+        company.push(e.name)
+      } else if (e.module == "category") {
+        category.push(e.name)
+      }
+    });
+    let sql = `SELECT * FROM basic_products`;
+    con.query(sql, (err, result) => {
+      res.render("basic_products", {
+        message: result,
+        company: company,
+        category: category,
+        title: "Products",
+      });
+    });
+  });
+
+  
 });
-router.get("/forms_2", (req, res) => {
-  res.render("form_2", { title: "forms" });
-});
-router.get("/forms", (req, res) => {
-  res.render("forms", { title: "forms" });
-});
-router.get("/dealership", (req, res) => {
-  res.render("dealership", { title: "Dealership" });
-});
+
 router.get("/store", (req, res) => {
   if (req.cookies.HEStore === undefined) {
     res.render("storeLogin", { title: "Store Login" });
@@ -76,54 +95,168 @@ router.post("/basic_new_company_upload", (req, res) => {
   let name = req.body.name;
   let address = req.body.address;
   let mobile = req.body.mobile;
+  
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  spl_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
+  con.query(spl_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name, address, mobile) VALUES ("company", "${name}", "${address}", "${mobile}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "company"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_companies", {
+            successMsg: "New company added successfully!",
+            message: result,
+            title: "Companies",
+          });
+        });
+      });
+      
+    } else {
+      let sql = `SELECT * FROM basic_module WHERE module = "company"`;
+      con.query(sql, (err, result) => {
+        res.render("basic_companies", {
+          errorMessage: "This company is already exist!",
+          message: result,
+          title: "Companies",
+        });
+      });
+    }
+  })
+  
+  
+});
+
+router.post("/basic_new_product_upload", (req, res) => {
+  let name = req.body.name;
+  let category = req.body.category;
+  let brand = req.body.brand;
+  let mrp = req.body.mrp;
 
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  let sql = `INSERT INTO basic_module (module, name, address, mobile) VALUES ("company", "${name}", "${address}", "${mobile}")`;
-  con.query(sql, (err, result) => {
-    let sql = `SELECT * FROM basic_module`;
-    con.query(sql, (err, result) => {
-      res.render("basic_companies", {
-        successMsg: "New company added successfully!",
-        message: result,
-        title: "Companies",
+  let sql_query = `SELECT * FROM basic_products WHERE product_name = "${name}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_products (product_name, category, brand, mrp) VALUES ("${name}", "${category}", "${brand}", "${mrp}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module`;
+        con.query(sql, (err, result) => {
+          let company = [];
+          let category = [];
+          result.forEach((e) => {
+            if (e.module == "company") {
+              company.push(e.name);
+            } else if (e.module == "category") {
+              category.push(e.name);
+            }
+          });
+          let sql = `SELECT * FROM basic_products`;
+          con.query(sql, (err, result) => {
+            res.render("basic_products", {
+              successMsg: "New product uploaded successfully!",
+              message: result,
+              company: company,
+              category: category,
+              title: "Products",
+            });
+          });
+        });
       });
-    });
-  })
+    } else {
+       let sql = `SELECT * FROM basic_module`;
+       con.query(sql, (err, result) => {
+         let company = [];
+         let category = [];
+         result.forEach((e) => {
+           if (e.module == "company") {
+             company.push(e.name);
+           } else if (e.module == "category") {
+             category.push(e.name);
+           }
+         });
+         let sql = `SELECT * FROM basic_products`;
+         con.query(sql, (err, result) => {
+           res.render("basic_products", {
+             errorMessage: "This product is already exist!",
+             message: result,
+             company: company,
+             category: category,
+             title: "Products",
+           });
+         });
+       });
+    }
+  });
+
+  
 });
 
 router.post("/basic_new_category_upload", (req, res) => {
   let name = req.body.name;
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  let sql = `INSERT INTO basic_module (module, name) VALUES ("category", "${name}")`;
-  con.query(sql, (err, result) => {
-    let sql = `SELECT * FROM basic_module WHERE module = "category"`;
-    con.query(sql, (err, result) => {
-      res.render("basic_categories", {
-        successMsg: "New category added successfully!",
-        message: result,
-        title: "Categories",
+  let sql_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name) VALUES ("category", "${name}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "category"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_categories", {
+            successMsg: "New category added successfully!",
+            message: result,
+            title: "Categories",
+          });
+        });
       });
-    });
+    } else {
+      let sql = `SELECT * FROM basic_module WHERE module = "category"`;
+      con.query(sql, (err, result) => {
+        res.render("basic_categories", {
+          errorMessage: "This category is already exist!",
+          message: result,
+          title: "Categories",
+        });
+      });
+    }
   })
+
+  
 });
 
 router.post("/basic_new_color_upload", (req, res) => {
   let name = req.body.name;
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  let sql = `INSERT INTO basic_module (module, name) VALUES ("color", "${name}")`;
-  con.query(sql, (err, result) => {
-    let sql = `SELECT * FROM basic_module WHERE module = "color"`;
-    con.query(sql, (err, result) => {
-      res.render("basic_color", {
-        successMsg: "New color added successfully!",
-        message: result,
-        title: "Ccolor",
+
+  let sql_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name) VALUES ("color", "${name}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_color", {
+            successMsg: "New color added successfully!",
+            message: result,
+            title: "Ccolor",
+          });
+        });
       });
-    });
+    } else {
+       let sql = `SELECT * FROM basic_module WHERE module = "color"`;
+       con.query(sql, (err, result) => {
+         res.render("basic_color", {
+           errorMessage: "This color is already exist!",
+           message: result,
+           title: "Ccolor",
+         });
+       });
+    }
   });
+ 
 });
 
 router.post("/basic_company_delete", (req, res) => {
@@ -132,12 +265,43 @@ router.post("/basic_company_delete", (req, res) => {
   const con = getDBInfo.con;
   let sql = `DELETE FROM basic_module WHERE id = "${cid}"`;
   con.query(sql, (err, result) => {
-    let sql = `SELECT * FROM basic_module`;
+    let sql = `SELECT * FROM basic_module WHERE module = "company"`;
     con.query(sql, (err, result) => {
       res.render("basic_companies", {
         successMsg: "Company removed successfully!",
         message: result,
         title: "Companies",
+      });
+    });
+  });
+});
+
+router.post("/basic_product_delete", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM basic_products WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module`;
+    con.query(sql, (err, result) => {
+      let company = [];
+      let category = [];
+      result.forEach((e) => {
+        if (e.module == "company") {
+          company.push(e.name);
+        } else if (e.module == "category") {
+          category.push(e.name);
+        }
+      });
+      let sql = `SELECT * FROM basic_products`;
+      con.query(sql, (err, result) => {
+        res.render("basic_products", {
+          successMsg: "Product removed successfully!",
+          message: result,
+          company: company,
+          category: category,
+          title: "Products",
+        });
       });
     });
   });
@@ -187,6 +351,16 @@ router.post("/basic_company_edit", (req, res) => {
   });
 });
 
+router.post("/basic_product_edit", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_products WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    res.send(result[0]);
+  });
+});
+
 router.post("/basic_category_edit", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
@@ -216,7 +390,7 @@ router.post("/basic_edit_company_update", (req, res) => {
   const con = getDBInfo.con;
   let sql = `UPDATE basic_module SET name = "${name}", address = "${address}", mobile = "${mobile}" WHERE id = "${cid}"`;
   con.query(sql, (err, result) => {
-    let sql = `SELECT * FROM basic_module`;
+    let sql = `SELECT * FROM basic_module WHERE module = "company"`;
     con.query(sql, (err, result) => {
       res.render("basic_companies", {
         successMsg: "Company updated successfully!",
@@ -224,9 +398,44 @@ router.post("/basic_edit_company_update", (req, res) => {
         title: "Companies",
       });
     });
-    // res.send("Company removed successfully!");
   });
 
+});
+
+router.post("/basic_edit_product_update", (req, res) => {
+  let cid = req.body.cid;
+  let name = req.body.name;
+  let category = req.body.category;
+  let brand = req.body.brand;
+  let mrp = req.body.mrp;
+  console.log(cid)
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `UPDATE basic_products SET product_name = "${name}", category = "${category}", brand = "${brand}", mrp = "${mrp}" WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module`;
+    con.query(sql, (err, result) => {
+      let company = [];
+      let category = [];
+      result.forEach((e) => {
+        if (e.module == "company") {
+          company.push(e.name);
+        } else if (e.module == "category") {
+          category.push(e.name);
+        }
+      });
+      let sql = `SELECT * FROM basic_products`;
+      con.query(sql, (err, result) => {
+        res.render("basic_products", {
+          successMsg: "Product updated successfully!",
+          message: result,
+          company: company,
+          category: category,
+          title: "Products",
+        });
+      });
+    });
+  });
 });
 
 router.post("/basic_edit_category_update", (req, res) => {
@@ -273,9 +482,23 @@ router.post("/basic_company_search", (req, res) => {
   let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
   con.query(sql, (err, result) => {
     if (result.length <= 0) {
-      res.send("No company found!")
+      res.send("No company found!");
     } else {
-      res.send(result[0]);
+      res.send(result);
+    }
+  });
+});
+
+router.post("/basic_product_search", (req, res) => {
+  let SI = req.body.SI;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_products WHERE product_name LIKE "%${SI}%"`;
+  con.query(sql, (err, result) => {
+    if (result.length <= 0) {
+      res.send("No product found!");
+    } else {
+      res.send(result);
     }
   });
 });
@@ -289,7 +512,7 @@ router.post("/basic_category_search", (req, res) => {
     if (result.length <= 0) {
       res.send("No category found!");
     } else {
-      res.send(result[0]);
+      res.send(result);
     }
   });
 });
@@ -303,7 +526,7 @@ router.post("/basic_color_search", (req, res) => {
     if (result.length <= 0) {
       res.send("No color found!");
     } else {
-      res.send(result[0]);
+      res.send(result);
     }
   });
 });

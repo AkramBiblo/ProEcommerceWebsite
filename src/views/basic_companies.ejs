@@ -119,23 +119,32 @@
             SI: SI
           },
           success: (data) => {
-            $('tbody').empty()
-            $('tbody').prepend(
-              `<td>${data.id}</td>
-              <td>${data.name}</td>
-              <td>${data.address}</td>
-              <td>${data.mobile}</td>
+            if (data == "No company found!") {
+              alert("No company found!")
+            } else {
+              $('tbody').empty()
+              for (let i = 0; i < data.length; i++) {
+                const elem = data[i];
+                $('tbody').prepend(
+              `<tr>
+              <td>${elem.id}</td>
+              <td>${elem.name}</td>
+              <td>${elem.address}</td>
+              <td>${elem.mobile}</td>
               <td>
-                <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+                <button id="editButton" cid="${elem.id}" name="edit" class="btn btn-warning">Edit</button>
               </td>
               <td>
                 <form action="/basic_company_delete" method="post">
-                    <input name="cid" type="hidden" value="${data.id}">
+                    <input name="cid" type="hidden" value="${elem.id}">
                      <button class="btn btn-danger">Remove</button>
                 </form>
               </td>
             </tr>`
             )
+              }
+            
+            }
           }
         })
       });

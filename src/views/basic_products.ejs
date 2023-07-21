@@ -1,0 +1,319 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing Products</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse">
+              <form action="/basic_new_product_upload" method="post">
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="name">Product Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="name" placeholder="Product Name" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="category">Category</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                  <div class="form-group">
+                    <select class="form-control" name="category">
+                      <option value=""></option>
+                      <% if (locals.category) {
+                        for (let i = 0; i < category.length; i++) {
+                          const e = category[i];%>
+                        <option><%= e %></option>
+                        <%}} %>
+                    </select>
+                  </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="brand">Brand</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                  <div class="form-group">
+                    <select class="form-control" name="brand">
+                      <option value=""></option>
+                      <% if (locals.company) {
+                        for (let i = 0; i < company.length; i++) {
+                          const e = company[i];%>
+                        <option><%= e %></option>
+                        <%}} %>
+                    </select>
+                  </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="mrp">MRP</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="mrp" placeholder="MRP" />
+                  </div>
+                </div>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+      </div>
+      <div id="editForm" class="container mt-3">
+
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Model</th>
+              <th>Category</th>
+              <th>Brand</th>
+              <th>MRP</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(product) {%>
+            <td><%= product.id %></td>
+            <td><%= product.product_name %></td>
+            <td><%= product.category %></td>
+            <td><%= product.brand %></td>
+            <td><%= product.mrp %></td>
+            <td>
+              <button cid="<%= product.id %>" name="edit" class="btn btn-warning">Edit</button>
+            </td>
+            <td>
+              <form action="/basic_product_delete" method="post">
+                <input name="cid" type="hidden" value="<%= product.id %>">
+                <button class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/basic_product_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (result) => {
+            if (result == "No product found!") {
+              alert ("No product found!")
+            } else {
+              $('tbody').empty();
+            for (let i = 0; i < result.length; i++) {
+              const data = result[i];
+                  $('tbody').append(`
+                  <tr>
+                  <td>${data.id}</td>
+                    <td>${data.product_name}</td>
+                    <td>${data.category}</td>
+                    <td>${data.brand}</td>
+                    <td>${data.mrp}</td>
+                    <td>
+                      <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+                    </td>
+                    <td>
+                      <form action="/basic_product_delete" method="post">
+                          <input name="cid" type="hidden" value="${data.id}">
+                          <button class="btn btn-danger">Remove</button>
+                      </form>
+                    </td>
+                  </tr>`)
+
+            }
+            //   `<td>${data.id}</td>
+            //   <td>${data.product_name}</td>
+            //   <td>${data.category}</td>
+            //   <td>${data.brand}</td>
+            //   <td>${data.mrp}</td>
+            //   <td>
+            //     <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+            //   </td>
+            //   <td>
+            //     <form action="/basic_product_delete" method="post">
+            //         <input name="cid" type="hidden" value="${data.id}">
+            //          <button class="btn btn-danger">Remove</button>
+            //     </form>
+            //   </td>
+            // </tr>`
+            }
+            
+            
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/basic_product_edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Product</h5>
+              </div>
+              <form action="/basic_edit_product_update" method="post">
+               <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="name">Product Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="name" value="${data.product_name}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="category">Category</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="category" value="${data.category}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="brand">Brand</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="brand" value="${data.brand}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="mrp">MRP</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="mrp" value="${data.mrp}"/>
+                  </div>
+                </div>
+                    <input type="hidden" class="form-control" name="cid" value="${data.id}"/>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+              </div>`)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/basic_product_edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Product</h5>
+              </div>
+              <form action="/basic_edit_product_update" method="post">
+              <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="name">Product Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="name" value="${data.product_name}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="category">Category</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="category" value="${data.category}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="brand">Brand</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="brand" value="${data.brand}"/>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="mrp">MRP</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="mrp" value="${data.mrp}"/>
+                  </div>
+                </div>
+                    <input type="hidden" class="form-control" name="cid" value="${data.id}"/>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+              </div>`)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })      
+
+
+    })
+  </script>
+</body>
