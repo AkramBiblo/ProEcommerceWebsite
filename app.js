@@ -7,6 +7,9 @@ dotenv.config({ path: "./.env" });
 const PORT = process.env.PORT || 2000;
 
 const router = require("./src/routes/router");
+const bankbook = require("./src/routes/bankbook");
+const register = require("./src/routes/employee");
+const customer = require("./src/routes/customer");
 
 // Templating Engine
 app.set("views", "./src/views");
@@ -24,6 +27,9 @@ app.use("/uploadedFiles", express.static(__dirname + "public/uploadedFiles"));
 
 // Routes
 app.use("/", router);
+app.use("/bank", bankbook);
+app.use("/employee", register);
+app.use("/customer", customer);
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

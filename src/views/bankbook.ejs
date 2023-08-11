@@ -1,0 +1,148 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing Bank Accounts</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse">
+              <form action="/bank/new_bank_upload" method="post">
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="bank_nm">Bank Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="bank_nm" placeholder="Bank Name" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="branch">Branch</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="branch" placeholder="Branch" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="ac_nr">Account Number</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="number" class="form-control" name="ac_nr" placeholder="Account Number" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="ac_nm">Account Name</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="ac_nm" placeholder="Account Name" />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="balance">Opening Balance</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="balance"/>
+                  </div>
+                </div>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>AC Nr.</th>
+              <th>Bank Name</th>
+              <th>Branch</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(bank) {%>
+            <tr>
+              <td><%= bank.ac_nr %></td>
+              <td><%= bank.name %></td>
+              <td><%= bank.branch %></td>
+              <td><%= bank.balance %></td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/bank/bank_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (data) => {
+            if (data == "No Bank found!") {
+              alert("No Bank found!")
+            } else {
+              $('tbody').empty()
+              for (let i = 0; i < data.length; i++) {
+                const elem = data[i];
+                $('tbody').prepend(
+                  `<tr>
+                  <td>${elem.name}</td>
+                  <td>${elem.branch}</td>
+                  <td>${elem.ac_nr}</td>
+                  <td>${elem.balance}</td>
+                </tr>`
+                )
+              }
+            
+            }
+          }
+        })
+      });  
+
+    })
+  </script>
+</body>

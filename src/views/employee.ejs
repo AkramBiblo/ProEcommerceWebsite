@@ -1,0 +1,299 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing employees</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+           <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse">
+             <form action="/employee/new" method="POST" enctype="multipart/form-data">
+              <div class="container mt-2">
+                  <div class="row mt-3">
+                      <div class="col">
+                          <div class="flex-column justify-content-end">
+                              <div>
+                                  <h6>Upload Profile Picture</h6>
+                              </div>
+                              <div class="mt-2 d-flex">
+                                  <input type="file" name="avatar" required>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="row mt-2">
+                      
+                      <div class="col">
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="name">Name</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="name" placeholder="Name" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="DOB">DOB</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="date" class="form-control" name="DOB" placeholder="Date of Birth" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="p_address">Present Address</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="p_address" placeholder="Present Address" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="pm_address">Permanent Address</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="pm_address" placeholder="Permanent Address" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="designation">Designation</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="designation" placeholder="Designation" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="department">Department</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="department" placeholder="Department" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="EICP">EICP</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="EICP" placeholder="Experience in current position" required>
+                              </div>
+                          </div>
+                          
+                        </div>
+
+                        <div class="col">
+                        
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="j_date">Joining Date</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="date" class="form-control" name="j_date" placeholder="Joining Date" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="qualifications">Qualifications</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="qualifications" placeholder="Qualifications" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="last_company">Last Company</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="last_company" placeholder="Last company" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="DILC">DILC</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="DILC" placeholder="Designation in last company" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="NID">NID</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="NID" placeholder="NID" required>
+                              </div>
+                          </div>
+                          <div class="row mt-3">
+                              <div class="col-lg-4">
+                                  <h6><label for="mobile">Contact</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="mobile" placeholder="Contact Number" required>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row d-flex justify-content-end mt-4 mr-3">
+                    <input class="btn btn-success mr-2" name="submit" type="submit" value="Ragister">
+                </div>
+              </div>
+             </form>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+      <div id="editForm" class="container mt-3">
+
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Designation</th>
+              <th>Department</th>
+              <th>Contact</th>
+              <th>Edit</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(employee) {%>
+            <tr>
+            <td><%= employee.id %></td>
+            <td><%= employee.name %></td>
+            <td><%= employee.designation %></td>
+            <td><%= employee.department %></td>
+            <td><%= employee.mobile %></td>
+            <td>
+              <button cid="<%= employee.id %>" name="edit" class="btn btn-warning">Edit</button>
+            </td>
+            <td>
+              <form action="/employee/employee_delete" method="post">
+                <input name="cid" type="hidden" value="<%= employee.id %>">
+                <button class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/employee/employee_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (result) => {
+            if (result == "No product found!") {
+              alert ("No product found!")
+            } else {
+              $('tbody').empty();
+            for (let i = 0; i < result.length; i++) {
+              const data = result[i];
+                  $('tbody').append(`
+                  <tr>
+                  <td>${data.id}</td>
+                    <td>${data.product_name}</td>
+                    <td>${data.category}</td>
+                    <td>${data.brand}</td>
+                    <td>${data.mrp}</td>
+                    <td>
+                      <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+                    </td>
+                    <td>
+                      <form action="/employee/employee_delete" method="post">
+                          <input name="cid" type="hidden" value="${data.id}">
+                          <button class="btn btn-danger">Remove</button>
+                      </form>
+                    </td>
+                  </tr>`)
+
+            }}
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/employee/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/employee/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })      
+
+
+    })
+  </script>
+</body>

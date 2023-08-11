@@ -55,6 +55,18 @@ router.get("/color", (req, res) => {
   });
 });
 
+router.get("/godown", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE module = "godown"`;
+  con.query(sql, (err, result) => {
+    res.render("basic_godown", {
+      message: result,
+      title: "Godown",
+    });
+  });
+});
+
 router.get("/products", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -79,9 +91,8 @@ router.get("/products", (req, res) => {
       });
     });
   });
-
-  
 });
+
 
 router.get("/store", (req, res) => {
   if (req.cookies.HEStore === undefined) {
@@ -241,7 +252,7 @@ router.post("/basic_new_color_upload", (req, res) => {
           res.render("basic_color", {
             successMsg: "New color added successfully!",
             message: result,
-            title: "Ccolor",
+            title: "Color",
           });
         });
       });
@@ -251,12 +262,44 @@ router.post("/basic_new_color_upload", (req, res) => {
          res.render("basic_color", {
            errorMessage: "This color is already exist!",
            message: result,
-           title: "Ccolor",
+           title: "Color",
          });
        });
     }
   });
  
+});
+
+router.post("/basic_new_godown_upload", (req, res) => {
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+
+  let sql_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name) VALUES ("godown", "${name}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "godown"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_godown", {
+            successMsg: "New Godown added successfully!",
+            message: result,
+            title: "Godown",
+          });
+        });
+      });
+    } else {
+      let sql = `SELECT * FROM basic_module WHERE module = "godown"`;
+      con.query(sql, (err, result) => {
+        res.render("basic_godown", {
+          errorMessage: "This godown is already exist!",
+          message: result,
+          title: "godown",
+        });
+      });
+    }
+  });
 });
 
 router.post("/basic_company_delete", (req, res) => {
@@ -341,6 +384,23 @@ router.post("/basic_color_delete", (req, res) => {
   });
 });
 
+router.post("/basic_godown_delete", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM basic_module WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "godown"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_godown", {
+        successMsg: "godown removed successfully!",
+        message: result,
+        title: "Godown",
+      });
+    });
+  });
+});
+
 router.post("/basic_company_edit", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
@@ -372,6 +432,16 @@ router.post("/basic_category_edit", (req, res) => {
 });
 
 router.post("/basic_color_edit", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    res.send(result[0]);
+  });
+});
+
+router.post("/basic_godown_edit", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -475,6 +545,24 @@ router.post("/basic_edit_color_update", (req, res) => {
   });
 });
 
+router.post("/basic_edit_godown_update", (req, res) => {
+  let cid = req.body.cid;
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `UPDATE basic_module SET name = "${name}" WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "godown"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_godown", {
+        successMsg: "Godown updated successfully!",
+        message: result,
+        title: "Godown",
+      });
+    });
+  });
+});
+
 router.post("/basic_company_search", (req, res) => {
   let SI = req.body.SI;
   const getDBInfo = require("../../db");
@@ -531,6 +619,19 @@ router.post("/basic_color_search", (req, res) => {
   });
 });
 
+router.post("/basic_godown_search", (req, res) => {
+  let SI = req.body.SI;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
+  con.query(sql, (err, result) => {
+    if (result.length <= 0) {
+      res.send("No Godown found!");
+    } else {
+      res.send(result);
+    }
+  });
+});
 
 
 module.exports = router;
