@@ -1,0 +1,524 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing PO</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+           <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse mt-2" style="background-color: antiquewhite; padding-right: 15px; border-radius: 15px;">
+             <!-- <form action="/purchase/new" method="POST"> -->
+              <div class="row">
+                <div class="col">
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="date">Pur. Date</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="date" class="form-control" id="pur_date" name="date" placeholder="Purchase Date">
+                              </div>
+                          </div>
+                </div>
+                <div class="col">
+                  <!-- <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="challan">Challan</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="challan" id="challan" placeholder="Challan Number" readonly>
+                              </div>
+                          </div> -->
+                </div>
+                <div class="col">
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="invoice">Invoice</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="invoice" id="invoice" placeholder="Invoice Number">
+                              </div>
+                          </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <% if (locals.message[1] !== null) {%>
+                    <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="supplier">Supplier</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                   <div class="form-group">
+                                <select class="form-control" id="supplier" name="supplier">
+                                  <% if (locals.message[1]) { locals.message[1].forEach(function(s) {%>
+                                    <option><%= s.name %></option>
+                                <% } )}%>
+                                </select>
+                              </div>
+                              </div>
+                          </div>
+                 <% } else {%>
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="supplier">Supplier</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                <button class="btn btn-outline-info" type="button"><a href="/companies" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Supplier</a></button>
+                              </div>
+                          </div>
+                <% }%>
+                        
+                </div>
+                <div class="col">
+                            <div class="row mt-3">
+                              <div class="col-lg-3 mt-2 text-right">
+                                  <h6><label for="model">Model</label></h6>
+                              </div>
+                              <div class="col-lg-9">
+                                <div class="container">
+                                  <input type="text" class="form-control" name="invoice" id="model_selected">
+                                </div>
+                                   <div class="container-fluid d-flex justify-content-center">
+                                      <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">Select Model</button>
+                                      <a href="/products" target="_blank" class="btn btn-outline-info" role="button">Add Model</a>
+                                   <!-- Modal -->
+                                    <div class="modal fade" id="myModal" role="dialog">
+                                      <div class="modal-dialog">
+                                      
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <div class="container model_search_div">
+                                            <div class="container d-flex justify-content-end model_search">
+                                              <div class="container sticky" id="model_search">
+                                                <div class="input-group">
+                                                  <input id="search_input" name="model_search_input" type="text" class="form-control"
+                                                    placeholder="Search Products" />
+                                                  <div class="input-group-append">
+                                                    <button name="model_search_submit_button" class="btn btn-info" type="submit">
+                                                      Search
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div class="container">
+                                              <table class="table">
+                                            <thead>
+                                              <tr>
+                                                <th>Code</th>
+                                                <th>Model</th>
+                                                <th>Brand</th>
+                                                <th>MRP</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody id="model_search_result">
+                                              
+                                            </tbody>
+                                          </table>
+                                            </div>
+                                          </div>
+                                          </div>
+                                        </div>
+                                        
+                                      </div>
+                                    </div>
+                                   </div>
+                              </div>
+                          </div>
+                </div>
+                <div class="col">
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="qty">QTY</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="number" id="qty" class="form-control" name="qty" required>
+                              </div>
+                          </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <% if (locals.message[0] !== null) {%>
+                    <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="godown">Godown</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                   <div class="form-group">
+                                <select class="form-control" id="godown" name="godown">
+                                  <% if (locals.message[0]) { locals.message[0].forEach(function(s) {%>
+                                    <option><%= s.name %></option>
+                                <% } )}%>
+                                </select>
+                              </div>
+                              </div>
+                          </div>
+                 <% } else {%>
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="godown">Godown</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                <button class="btn btn-outline-info" type="button"><a href="/godown" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Godown/Center</a></button>
+                              </div>
+                          </div>
+                <% }%>
+                        
+                </div>
+               <div class="col">
+                  <% if (locals.message[3] !== null) {%>
+                    <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="color">Color</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                   <div class="form-group">
+                                <select class="form-control" id="color" name="color">
+                                  <% if (locals.message[3]) { locals.message[3].forEach(function(s) {%>
+                                    <option><%= s.name %></option>
+                                <% } )}%>
+                                </select>
+                              </div>
+                              </div>
+                          </div>
+                 <% } else {%>
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="color">Color</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                <button class="btn btn-outline-info" type="button"><a href="/color" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Color</a></button>
+                              </div>
+                          </div>
+                <% }%>
+                        
+                </div>
+                <div class="col">
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="prev_stock">Prev_stock</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="prev_stock" id="prev_stock" readonly>
+                              </div>
+                          </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                        <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="pur_rate">Pur. Rate</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="text" class="form-control" name="pur_rate" id="pur_rate" readonly>
+                              </div>
+                          </div>
+                </div>
+                <div class="col">
+                          <div class="row mt-3">
+                              <div class="col-lg-3 mt-2 text-right">
+                                  <h6><label for="mrp">MRP</label></h6>
+                              </div>
+                              <div class="col-lg-9">
+                                  <input type="number" class="form-control" name="mrp" id="mrp">
+                              </div>
+                          </div>
+                </div>
+                <div class="col">
+                  <div class="row mt-3">
+                              <div class="col-lg-4 mt-2 text-right">
+                                  <h6><label for="disc_per">Discount Per.</label></h6>
+                              </div>
+                              <div class="col-lg-8">
+                                  <input type="number" class="form-control" name="disc_per" id="disc_per" placeholder="Discount Per.">
+                              </div>
+                          </div>
+                </div>
+              </div>
+              <div class="container p-3 d-flex justify-content-center flex-wrap" id="barcode">
+                
+              </div>
+              <div class="row d-flex justify-content-end mt-4 mr-3">
+                    <input class="btn btn-success mr-2" name="submit" type="submit" id="register" value="Register">
+                </div>
+             <!-- </form> -->
+            </div>
+          </div>
+         
+        </div>
+        
+      </div>
+      <div id="editForm" class="container mt-3">
+
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Challan No</th>
+              <th>Order Date</th>
+              <th>Supplier</th>
+              <th>Company</th>
+              <th>Amount</th>
+              <th>Edit</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(employee) {%>
+            <tr>
+            <td><%= employee.id %></td>
+            <td><%= employee.name %></td>
+            <td><%= employee.c_type %></td>
+            <td><%= employee.address %></td>
+            <td><%= employee.contact %></td>
+            <td>
+              <button cid="<%= employee.id %>" name="edit" class="btn btn-warning">Edit</button>
+            </td>
+            <td>
+              <form action="/customer/customer_delete" method="post">
+                <input name="cid" type="hidden" value="<%= employee.id %>">
+                <button class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      // $('.model_search_div').hide()
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/customer/customer_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (result) => {
+            if (result == "No customer found!") {
+              alert ("No customer found!")
+            } else {
+              $('tbody').empty();
+            for (let i = 0; i < result.length; i++) {
+              const data = result[i];
+                  $('tbody').append(`
+                  <tr>
+                  <td>${data.id}</td>
+                    <td>${data.name}</td>
+                    <td>${data.c_type}</td>
+                    <td>${data.address}</td>
+                    <td>${data.contact}</td>
+                    <td>
+                      <button id="editButton" cid="${data.id}" name="edit" class="btn btn-warning">Edit</button>
+                    </td>
+                    <td>
+                      <form action="/employee/employee_delete" method="post">
+                          <input name="cid" type="hidden" value="${data.id}">
+                          <button class="btn btn-danger">Remove</button>
+                      </form>
+                    </td>
+                  </tr>`)
+
+            }}
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/customer/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/customer/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })  
+
+      $(`button[name="model_search_submit_button"]`).click(() => {
+        let SI = $(`input[name="model_search_input"]`).val()
+        $.ajax({
+          url: "/basic_product_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (result) => {
+            if (result == "No product found!") {
+              alert ("No product found!")
+            } else {
+              $('#model_search_result').empty();
+              let count = 0;
+            for (let i = 0; i < result.length; i++) {
+                count++
+              const data = result[i];
+                  $('#model_search_result').append(`
+                  <tr>
+                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" product_code="${data.id}" id="${count}" data-id="${count}" value="${data.product_name}"></td>
+                    <td>${data.product_name}</td>
+                    <td>${data.brand}</td>
+                    <td>${data.mrp}</td>
+                  </tr>`)
+
+            }
+            }
+            
+          }
+        })
+      });
+      
+
+    })
+
+    $(`input[name="qty"]`).keyup(function(e){
+      $('#barcode').empty()
+        let val = $('#qty').val()
+        let int = Number(val)
+        for (let i = 0; i < int; i++) {
+          $('#barcode').append(`<input type="text" class="bc" name="b${i}" style="width:200px">`)
+        }
+      });
+
+      function addModel(a) {
+        let val = document.getElementById(a).getAttribute('value');
+        $('#model_selected').val(val)
+      }
+
+
+
+      // $("body").on("click", "#register", () => {
+      //   let pur_date = $('#pur_date').val()
+      //   let challan = $('#challan').val()
+      //   let invoice = $('#invoice').val()
+      //   let supplier = $('#supplier').val()
+      //   let model = $('#model').val()
+      //   let qty = $('#qty').val()
+      //   let godown = $('#godown').val()
+      //   let color = $('#color').val()
+      //   let prev_stock = $('#prev_stock').val()
+      //   let pur_rate = $('#pur_rate').val()
+      //   let mrp = $('#mrp').val()
+      //   let disc_per = $('#disc_per').val()
+        
+
+      // })  
+
+      function sendPurchaseData(bc) {
+        let pur_date = $('#pur_date').val()
+        let challan = $('#challan').val()
+        let invoice = $('#invoice').val()
+        let supplier = $('#supplier').val()
+        let model = $('#model').val()
+        let qty = $('#qty').val()
+        let godown = $('#godown').val()
+        let color = $('#color').val()
+        let prev_stock = $('#prev_stock').val()
+        let pur_rate = $('#pur_rate').val()
+        let mrp = $('#mrp').val()
+        let disc_per = $('#disc_per').val()
+
+        $.ajax({
+          url: '/purchase/new',
+          type : 'POST',
+          data : {
+            pur_date : pur_date,
+            challan : challan,
+            invoice : invoice,
+            supplier : supplier,
+            model : model,
+            qty : qty,
+            godown : godown,
+            color : color,
+            prev_stock : prev_stock,
+            pur_rate : pur_rate,
+            mrp : mrp,
+            disc_per : disc_per,
+            b : JSON.stringify(bc)
+          },
+          
+        })
+      }
+      
+
+      document.getElementById('register').addEventListener('click', () => {
+        let barcode = []
+        document.querySelectorAll('.bc').forEach((e) => {
+          let b = e.value
+          barcode.push(b)
+        })
+
+        sendPurchaseData(barcode)
+        
+      })
+
+      
+      
+  </script>
+</body>

@@ -10,6 +10,8 @@ const router = require("./src/routes/router");
 const bankbook = require("./src/routes/bankbook");
 const register = require("./src/routes/employee");
 const customer = require("./src/routes/customer");
+const supplier = require("./src/routes/supplier");
+const purchase = require("./src/routes/purchase");
 
 // Templating Engine
 app.set("views", "./src/views");
@@ -30,6 +32,8 @@ app.use("/", router);
 app.use("/bank", bankbook);
 app.use("/employee", register);
 app.use("/customer", customer);
+app.use("/supplier", supplier);
+app.use("/purchase", purchase);
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

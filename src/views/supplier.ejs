@@ -1,0 +1,129 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing Suppliers</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+           <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+       
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message !== null) { message.forEach(function(supplier) {%>
+            <tr>
+            <td><%= supplier.supplier_id %></td>
+            <td><%= supplier.s_name %></td>
+            <td><%= supplier.contact %></td>
+            <td><%= supplier.balance %></td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/supplier/supplier_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (result) => {
+            if (result == "No supplier found!") {
+              alert ("No supplier found!")
+            } else {
+              $('tbody').empty();
+            for (let i = 0; i < result.length; i++) {
+              const data = result[i];
+                  $('tbody').append(`
+                  <tr>
+                  <td>${data.id}</td>
+                    <td>${data.name}</td>
+                    <td>${data.contact}</td>
+                    <td>${data.balance}</td>
+                  </tr>`)
+
+            }}
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/supplier/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let cid = e.target.getAttribute('cid')
+        $.ajax({
+          url: "/supplier/edit",
+          method: 'POST',
+          data: {
+            cid: cid
+          },
+          success: (data) => {
+            $('#editForm').html(data)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })      
+
+
+    })
+  </script>
+</body>

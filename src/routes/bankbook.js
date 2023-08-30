@@ -15,10 +15,17 @@ const con = getDBInfo.con;
 bankbook.get("/", (req, res) => {
  let sql = `SELECT * FROM bankbook`;
  con.query(sql, (err, result) => {
-   res.render("bankbook", {
-     message: result,
-     title: "bankbook",
-   });
+   if (result.length <= 0) {
+      res.render("bankbook", {
+        message: null,
+        title: "bankbook",
+      });
+   } else {
+    res.render("bankbook", {
+      message: result,
+      title: "bankbook",
+    });
+   }
  });
 });
 
@@ -65,7 +72,7 @@ bankbook.post("/bank_search", (req, res) => {
   let sql = `SELECT * FROM bankbook WHERE name LIKE "%${SI}%" || ac_nr LIKE "%${SI}%" || ac_nm LIKE "%${SI}%"`;
   con.query(sql, (err, result) => {
     if (result.length <= 0) {
-      res.send("No company found!");
+      res.send("No Bank found!");
     } else {
       res.send(result);
     }

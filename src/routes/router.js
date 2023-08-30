@@ -106,13 +106,14 @@ router.post("/basic_new_company_upload", (req, res) => {
   let name = req.body.name;
   let address = req.body.address;
   let mobile = req.body.mobile;
+  let ob = req.body.ob;
   
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
   spl_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
   con.query(spl_query, (err, result) => {
     if (result.length <= 0) {
-      let sql = `INSERT INTO basic_module (module, name, address, mobile) VALUES ("company", "${name}", "${address}", "${mobile}")`;
+      let sql = `INSERT INTO basic_module (module, name, address, mobile, balance) VALUES ("company", "${name}", "${address}", "${mobile}", ${ob})`;
       con.query(sql, (err, result) => {
         let sql = `SELECT * FROM basic_module WHERE module = "company"`;
         con.query(sql, (err, result) => {
