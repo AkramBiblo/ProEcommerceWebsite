@@ -3,6 +3,9 @@
     box-sizing: border-box;
   }
 
+  .hide {
+    display: none;
+  }
   .navDiv {
     max-width: 300px;
           padding: 20px;

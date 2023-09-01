@@ -128,7 +128,15 @@ purchase.get("/", (req, res) => {
 
 });
 
-
+purchase.post("/getQty", (req, res) => {
+  let model = req.body.model;
+    const getDBInfo = require("../../db");
+    const con = getDBInfo.con;
+    let sql = `SELECT * FROM basic_products WHERE product_name = "${model}" AND status = "stock"`;
+    con.query(sql, (err, result) => {
+      
+    });
+})
 
 purchase.post("/new", (req, res) => {
     let date = req.body.pur_date;
@@ -138,30 +146,29 @@ purchase.post("/new", (req, res) => {
     let model = req.body.model;
     let godown = req.body.godown;
     let color = req.body.color;
-    let prev_stock = req.body.prev_stock;
+    // let prev_stock = req.body.prev_stock;
     let qty = req.body.qty;
     let pur_rate = req.body.pur_rate;
     let disc_per = req.body.disc_per;
+    let flat_disc = req.body.flat_disc;
     let mrp = req.body.mrp;
     let bc = req.body.b;
     let cal = (Number(mrp) / 100) * Number(disc_per);
     let disc_amt = cal
-    
+
     let s = String(bc)
     let b = s.slice(1, -1)
     let c = b.replace(/['"]+/g, "");
     let d = c.split(',')
 
-    console.log(d.length)
-
-     const getDBInfo = require("../../db");
+    const getDBInfo = require("../../db");
      const con = getDBInfo.con;
     
      for (let i = 0; i < qty; i++) {
-      let sql = `INSERT INTO purchase (challan_no, date, supplier, invoice_no, model, godown, color, prev_stock, qty, pur_rate, disc_per, mrp, disc_amt, cash_sale_rate, barcode)
-      VALUES ("${challan}", "${date}", "${supplier}", "${invoice}", "${model}", "${godown}", "${color}", "${challan}", "${prev_stock}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${mrp}", "${d[i]}")`;
+      let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, godown, color, qty, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
+      VALUES ("${date}", "${supplier}", "${invoice}", "${model}", "${godown}", "${color}", "${qty}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${d[i]}", "Stock")`;
       con.query(sql, (err, result) => {
-        console.log('Data entry done')
+        // console.log('Data entry done')
       })
      }
     

@@ -42,10 +42,10 @@
                 <div class="col">
                   <div class="row mt-3">
                               <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="date">Pur. Date</label></h6>
+                                  <h6><label for="pur_date">Pur. Date</label></h6>
                               </div>
                               <div class="col-lg-8">
-                                  <input type="date" class="form-control" id="pur_date" name="date" placeholder="Purchase Date">
+                                  <input type="date" class="form-control" id="pur_date" name="pur_date" placeholder="Purchase Date">
                               </div>
                           </div>
                 </div>
@@ -106,7 +106,7 @@
                               </div>
                               <div class="col-lg-9">
                                 <div class="container">
-                                  <input type="text" class="form-control" name="invoice" id="model_selected">
+                                  <input type="text" class="form-control" name="model" id="model_selected">
                                 </div>
                                    <div class="container-fluid d-flex justify-content-center">
                                       <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">Select Model</button>
@@ -266,7 +266,14 @@
                                   <h6><label for="disc_per">Discount Per.</label></h6>
                               </div>
                               <div class="col-lg-8">
-                                  <input type="number" class="form-control" name="disc_per" id="disc_per" placeholder="Discount Per.">
+                                <div class="container-fluid p-0">
+                                  <input type="number" class="form-control" name="disc_per" id="disc_per" placeholder="Discount Per." maxlength="4">
+                                  <input type="number" class="form-control hide" name="flat_disc" id="flat_disc" placeholder="Flat Discount">
+                                </div>
+                                <div class="container-fluid p-0">
+                                  <button class="btn btn-outline-info hide" id="disc_button">Discount Percentage</button>
+                                  <button class="btn btn-outline-info" id="flat_disc_button">Flat Discount</button>
+                                </div>
                               </div>
                           </div>
                 </div>
@@ -330,6 +337,20 @@
       location.href = "/";
     }
     $(document).ready(() => {
+      $('#flat_disc_button').click(() => {
+        $('#disc_per').hide()
+        $('#flat_disc_button').hide()
+        $('#disc_button').removeClass('hide')
+        $('#flat_disc').removeClass('hide')
+        
+      })
+
+      $('#disc_button').click(() => {
+        $('#disc_per').show()
+        $('#flat_disc_button').show()
+        $('#flat_disc').addClass('hide')
+        $('#disc_button').addClass('hide')
+      })
       // $('.model_search_div').hide()
       $(`button[name="search_submit_button"]`).click(() => {
         let SI = $(`input[name="search_input"]`).val()
@@ -421,7 +442,7 @@
               const data = result[i];
                   $('#model_search_result').append(`
                   <tr>
-                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" product_code="${data.id}" id="${count}" data-id="${count}" value="${data.product_name}"></td>
+                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" mrp="${data.mrp}" product_code="${data.id}" id="${count}" value="${data.product_name}"></td>
                     <td>${data.product_name}</td>
                     <td>${data.brand}</td>
                     <td>${data.mrp}</td>
@@ -448,10 +469,37 @@
 
       function addModel(a) {
         let val = document.getElementById(a).getAttribute('value');
+        let mrp = document.getElementById(a).getAttribute('mrp');
         $('#model_selected').val(val)
+        $('#mrp').val(mrp)
+        $.ajax({
+          url: '/purchase/getQty',
+          type: 'post',
+          data: {
+            model: val,
+          },
+          success: (result) => {
+            
+          }
+        })
       }
 
+      $("#disc_per").keyup(() => {
+        let disc = $("#disc_per").val()
+        let mrp = $('#mrp').val()
+        $("#pur_rate").val(mrp - ((mrp/100) * disc))
+      })
 
+      $("#flat_disc").keyup(() => {
+        let disc = $("#flat_disc").val()
+        let mrp = $('#mrp').val()
+        $("#pur_rate").val(mrp - disc)
+        let disc_per = (disc/mrp) * 100
+        let t = String(disc_per)
+        let val = t.slice(0, 5);
+        Number(val)
+        $("#disc_per").val(val)
+      })
 
       // $("body").on("click", "#register", () => {
       //   let pur_date = $('#pur_date').val()
@@ -475,7 +523,7 @@
         let challan = $('#challan').val()
         let invoice = $('#invoice').val()
         let supplier = $('#supplier').val()
-        let model = $('#model').val()
+        let model = $('#model_selected').val()
         let qty = $('#qty').val()
         let godown = $('#godown').val()
         let color = $('#color').val()
@@ -483,23 +531,25 @@
         let pur_rate = $('#pur_rate').val()
         let mrp = $('#mrp').val()
         let disc_per = $('#disc_per').val()
+        let flat_disc = $('#flat_disc').val()
 
         $.ajax({
           url: '/purchase/new',
           type : 'POST',
           data : {
             pur_date : pur_date,
-            challan : challan,
+            // challan : challan,
             invoice : invoice,
             supplier : supplier,
             model : model,
             qty : qty,
             godown : godown,
             color : color,
-            prev_stock : prev_stock,
+            // prev_stock : prev_stock,
             pur_rate : pur_rate,
             mrp : mrp,
             disc_per : disc_per,
+            flat_disc : flat_disc,
             b : JSON.stringify(bc)
           },
           
