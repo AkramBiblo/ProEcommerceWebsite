@@ -194,7 +194,6 @@ customer.post("/edit_update", (req, res) => {
   let g_address = req.body.g_address;
   let G_NID = req.body.G_NID;
   let g_contact = req.body.g_contact;
-  console.log(cid);
 
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;

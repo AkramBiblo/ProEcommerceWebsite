@@ -12,6 +12,7 @@ const register = require("./src/routes/employee");
 const customer = require("./src/routes/customer");
 const supplier = require("./src/routes/supplier");
 const purchase = require("./src/routes/purchase");
+const sales = require("./src/routes/sales");
 
 // Templating Engine
 app.set("views", "./src/views");
@@ -34,6 +35,7 @@ app.use("/employee", register);
 app.use("/customer", customer);
 app.use("/supplier", supplier);
 app.use("/purchase", purchase);
+app.use("/sales", sales);
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

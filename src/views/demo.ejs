@@ -108,3 +108,528 @@
     </div>
   </div>
 </form>
+
+
+<script>
+   $.ajax({
+          url: '/purchase/check_bc',
+          type: 'POST',
+          dataType: "json",
+          data: {barcode_ : JSON.stringify(bc)},
+          success: (data) => {
+            if (data.existingBc !== "BC_OK") {
+              $("#existingBcDiv").show()
+              $("#existingbc").text(data.existingBc)
+              if (purchaseData.length > 0) {
+                      let count = 1
+                      for (let i = 0; i < purchaseData.length; i++) {
+                        const e = purchaseData[i];
+                        $("#addedModel").append(`
+                          <tr id="${i}">
+                            <td>
+                              ${count}
+                            </td> 
+                            <td>
+                              ${e[0]}
+                            </td>  
+                            <td>
+                              ${e[6]}
+                            </td> 
+                            <td>
+                              ${e[1]}
+                            </td>
+                            <td>
+                              ${e[10]}
+                            </td>
+                            <td>
+                              ${e[11]}
+                            </td> 
+                            <td>
+                              ${e[12]}
+                            </td>  
+                            <td>
+                              ${e[9]}
+                            </td> 
+                            <td>
+                              <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                            </td>
+                          </tr>
+                        `)
+                        count++
+                      }
+                      let netPurchase = Number(qty) * Number(pur_rate)
+                      let tpr = $("#TPR").text()
+                      let tprNum = Number(tpr)
+                      netPurchase += tprNum;
+                      $("#TPR").text(netPurchase)
+                    } 
+                    return
+            } else {
+                let pur_date = $('#pur_date').val()
+                let challan = $('#challan').val()
+                let invoice = $('#invoice').val()
+                let supplier = $('#supplier').val()
+                let model = $('#model_selected').val()
+                let qty = $('#qty').val()
+                let godown = $('#godown').val()
+                let color = $('#color').val()
+                let prev_stock = $('#prev_stock').val()
+                let pur_rate = $('#pur_rate').val()
+                let mrp = $('#mrp').val()
+                let disc_per = $('#disc_per').val()
+                let flat_disc = $('#flat_disc').val()
+
+              let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, "+"]
+
+              $('#model_selected').val("")
+              $('#qty').val("")
+              $('#disc_per').val("")
+              $('#flat_disc').val("")
+              $('#pur_rate').val("")
+              $('#mrp').val("")
+              $('#barcode').empty();
+              $("#addedModel").empty();
+
+              if (purchaseData.length > 0) {
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  // alert(e)
+                  if (e[0] == model) {
+                    alert("This model already exist in your order!")
+                    let count = 1
+                      for (let i = 0; i < purchaseData.length; i++) {
+                        const e = purchaseData[i];
+                        $("#addedModel").append(`
+                          <tr id="${i}">
+                            <td>
+                              ${count}
+                            </td> 
+                            <td>
+                              ${e[0]}
+                            </td>  
+                            <td>
+                              ${e[6]}
+                            </td> 
+                            <td>
+                              ${e[1]}
+                            </td>
+                            <td>
+                              ${e[10]}
+                            </td>
+                            <td>
+                              ${e[11]}
+                            </td> 
+                            <td>
+                              ${e[12]}
+                            </td>  
+                            <td>
+                              ${e[9]}
+                            </td> 
+                            <td>
+                              <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                            </td>
+                          </tr>
+                        `)
+                        count++
+                      }
+                      let netPurchase = Number(qty) * Number(pur_rate)
+                      let tpr = $("#TPR").text()
+                      let tprNum = Number(tpr)
+                      netPurchase += tprNum;
+                      $("#TPR").text(netPurchase)
+                      return;
+                  }
+                }
+                pushProduct(product)
+                let count = 1
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  $("#addedModel").append(`
+                    <tr id="${i}">
+                      <td>
+                        ${count}
+                      </td> 
+                      <td>
+                        ${e[0]}
+                      </td>  
+                      <td>
+                        ${e[6]}
+                      </td> 
+                      <td>
+                        ${e[1]}
+                      </td>
+                      <td>
+                        ${e[10]}
+                      </td>
+                      <td>
+                        ${e[11]}
+                      </td> 
+                      <td>
+                        ${e[12]}
+                      </td>  
+                      <td>
+                        ${e[9]}
+                      </td> 
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                      </td>
+                    </tr>
+                  `)
+                  count++
+                }
+                let netPurchase = Number(qty) * Number(pur_rate)
+                let tpr = $("#TPR").text()
+                let tprNum = Number(tpr)
+                netPurchase += tprNum;
+                $("#TPR").text(netPurchase)
+              } else {
+                pushProduct(product)
+                let count = 1
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  $("#addedModel").append(`
+                    <tr id="${i}">
+                      <td>
+                        ${count}
+                      </td> 
+                      <td>
+                        ${e[0]}
+                      </td>  
+                      <td>
+                        ${e[6]}
+                      </td> 
+                      <td>
+                        ${e[1]}
+                      </td>
+                      <td>
+                        ${e[10]}
+                      </td>
+                      <td>
+                        ${e[11]}
+                      </td> 
+                      <td>
+                        ${e[12]}
+                      </td>  
+                      <td>
+                        ${e[9]}
+                      </td> 
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                      </td>
+                    </tr>
+                  `)
+                  count++
+                }
+                let netPurchase = Number(qty) * Number(pur_rate)
+                let tpr = $("#TPR").text()
+                let tprNum = Number(tpr)
+                netPurchase += tprNum;
+                $("#TPR").text(netPurchase)
+              }
+          }}
+        })
+        
+
+
+</script>
+
+<script>
+       
+                        if (data.existingBc !== "BC_OK") {
+                    $("#existingBcDiv").show()
+                    $("#existingbc").text(data.existingBc)
+                    if (purchaseData.length > 0) {
+                            let count = 1
+                            for (let i = 0; i < purchaseData.length; i++) {
+                              const e = purchaseData[i];
+                              $("#addedModel").append(`
+                                <tr id="${i}">
+                                  <td>
+                                    ${count}
+                                  </td> 
+                                  <td>
+                                    ${e[0]}
+                                  </td>  
+                                  <td>
+                                    ${e[6]}
+                                  </td> 
+                                  <td>
+                                    ${e[1]}
+                                  </td>
+                                  <td>
+                                    ${e[10]}
+                                  </td>
+                                  <td>
+                                    ${e[11]}
+                                  </td> 
+                                  <td>
+                                    ${e[12]}
+                                  </td>  
+                                  <td>
+                                    ${e[9]}
+                                  </td> 
+                                  <td>
+                                    <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                                  </td>
+                                  <td>
+                                    <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                                  </td>
+                                </tr>
+                              `)
+                              count++
+                            }
+                            let netPurchase = Number(qty) * Number(pur_rate)
+                            let tpr = $("#TPR").text()
+                            let tprNum = Number(tpr)
+                            netPurchase += tprNum;
+                            $("#TPR").text(netPurchase)
+                          } 
+                          return
+                } else {
+                let pur_date = $('#pur_date').val()
+                let challan = $('#challan').val()
+                let invoice = $('#invoice').val()
+                let supplier = $('#supplier').val()
+                let model = $('#model_selected').val()
+                let qty = $('#qty').val()
+                let godown = $('#godown').val()
+                let color = $('#color').val()
+                let prev_stock = $('#prev_stock').val()
+                let pur_rate = $('#pur_rate').val()
+                let mrp = $('#mrp').val()
+                let disc_per = $('#disc_per').val()
+                let flat_disc = $('#flat_disc').val()
+
+              let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, "+"]
+
+              $('#model_selected').val("")
+              $('#qty').val("")
+              $('#disc_per').val("")
+              $('#flat_disc').val("")
+              $('#pur_rate').val("")
+              $('#mrp').val("")
+              $('#barcode').empty();
+              $("#addedModel").empty();
+
+              if (purchaseData.length > 0) {
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  // alert(e)
+                  if (e[0] == model) {
+                    alert("This model already exist in your order!")
+                    let count = 1
+                      for (let i = 0; i < purchaseData.length; i++) {
+                        const e = purchaseData[i];
+                        $("#addedModel").append(`
+                          <tr id="${i}">
+                            <td>
+                              ${count}
+                            </td> 
+                            <td>
+                              ${e[0]}
+                            </td>  
+                            <td>
+                              ${e[6]}
+                            </td> 
+                            <td>
+                              ${e[1]}
+                            </td>
+                            <td>
+                              ${e[10]}
+                            </td>
+                            <td>
+                              ${e[11]}
+                            </td> 
+                            <td>
+                              ${e[12]}
+                            </td>  
+                            <td>
+                              ${e[9]}
+                            </td> 
+                            <td>
+                              <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                            </td>
+                          </tr>
+                        `)
+                        count++
+                      }
+                      let netPurchase = Number(qty) * Number(pur_rate)
+                      let tpr = $("#TPR").text()
+                      let tprNum = Number(tpr)
+                      netPurchase += tprNum;
+                      $("#TPR").text(netPurchase)
+                      return;
+                  }
+                }
+                pushProduct(product)
+                let count = 1
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  $("#addedModel").append(`
+                    <tr id="${i}">
+                      <td>
+                        ${count}
+                      </td> 
+                      <td>
+                        ${e[0]}
+                      </td>  
+                      <td>
+                        ${e[6]}
+                      </td> 
+                      <td>
+                        ${e[1]}
+                      </td>
+                      <td>
+                        ${e[10]}
+                      </td>
+                      <td>
+                        ${e[11]}
+                      </td> 
+                      <td>
+                        ${e[12]}
+                      </td>  
+                      <td>
+                        ${e[9]}
+                      </td> 
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                      </td>
+                    </tr>
+                  `)
+                  count++
+                }
+                let netPurchase = Number(qty) * Number(pur_rate)
+                let tpr = $("#TPR").text()
+                let tprNum = Number(tpr)
+                netPurchase += tprNum;
+                $("#TPR").text(netPurchase)
+              } else {
+                pushProduct(product)
+                let count = 1
+                for (let i = 0; i < purchaseData.length; i++) {
+                  const e = purchaseData[i];
+                  $("#addedModel").append(`
+                    <tr id="${i}">
+                      <td>
+                        ${count}
+                      </td> 
+                      <td>
+                        ${e[0]}
+                      </td>  
+                      <td>
+                        ${e[6]}
+                      </td> 
+                      <td>
+                        ${e[1]}
+                      </td>
+                      <td>
+                        ${e[10]}
+                      </td>
+                      <td>
+                        ${e[11]}
+                      </td> 
+                      <td>
+                        ${e[12]}
+                      </td>  
+                      <td>
+                        ${e[9]}
+                      </td> 
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                      </td>
+                    </tr>
+                  `)
+                  count++
+                }
+                let netPurchase = Number(qty) * Number(pur_rate)
+                let tpr = $("#TPR").text()
+                let tprNum = Number(tpr)
+                netPurchase += tprNum;
+                $("#TPR").text(netPurchase)
+              }
+          }
+            
+</script>
+
+<script>
+  for (let i = 0; i < result.length; i++) {
+        const e = result[i];
+        let model = e.model;
+        
+        if (i == 0) {
+          for (let i = 0; i < allProducts.length; i++) {
+            const model_2 = allProducts[i][0];
+            if (model !== model_2) {
+              let sql = `SELECT * FROM purchase WHERE invoice_no = "${invoice}" AND model = "${model}"`
+              con.query(sql, (err, result_2) => {
+                
+                let qty = result_2.length;
+                let bc = []
+                
+                for (let j = 0; j < result_2.length; j++) {
+                  const e = result_2[j];
+                  bc.push(e.barcode)
+                }
+                let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount]
+                product[2] = bc;
+                pushProduct(product)
+                
+              })
+            }
+          }
+        } else {
+          let sql = `SELECT * FROM purchase WHERE invoice_no = "${invoice}" AND model = "${model}"`
+              con.query(sql, (err, result_2) => {
+                
+                let qty = result_2.length;
+                let bc = []
+                
+                for (let j = 0; j < result_2.length; j++) {
+                  const e = result_2[j];
+                  bc.push(e.barcode)
+                }
+                let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount]
+                product[2] = bc;
+                pushProduct(product)
+                // pushProducts(products)
+                new Promise((resolve) => {
+                  
+                  resolve(products)
+                }).then(() => {
+                  // console.log(products)
+                  // sendAllProducts()
+                })
+                
+              })
+        }
+        
+        
+      }
+      console.log(allProducts)
+      // allProducts.push(products)
+      function sendAllProducts() {
+        console.log(products)
+      }
+      // res.send(result)
+</script>
