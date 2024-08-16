@@ -5,7 +5,7 @@
     </div>
     <div class="col">
       <div class="container">
-        <h4>Existing PO</h4>
+        <h4>Existing Purchase Order</h4>
         <hr />
       </div>
       <div class="container result mt-2">
@@ -15,193 +15,196 @@
       </div>
       <div class="container-fluid">
         
-        <div class="row">
-          <div class="col">
-            <div class="container-fluid d-flex">
-              <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
-                Create New
-              </button>
-              <button class="btn btn-outline-info showChallanButton" data-toggle="collapse" data-target="#showChallan">
-                All Challan
-              </button>
+        <div class="container-fluid d-flex">
+          <button class="btn btn-outline-info" name="CreateNewButton" data-toggle="collapse" data-target="#createNew">
+            Create New
+          </button>
+          <button class="btn btn-outline-info showChallanButton" data-toggle="collapse" data-target="#showChallan">
+            All Challan
+          </button>
+          <button class="btn btn-outline-info purchaseReturn" data-toggle="collapse" data-target="#purchaseReturn">
+            Return
+          </button>
+        </div>
+        <div id="createNew" class="collapse mt-2" style="background-color: antiquewhite; padding-right: 15px; border-radius: 15px;">
+         <!-- <form action="/purchase/new" method="POST"> -->
+          
+          <div class="container-fluid text-center" id="prodUpdatSuccessMsgDiv">
+            <div class="alert alert-success">
+              <p id="prodUpdatSuccessMsg"></p>
             </div>
-            <div id="createNew" class="collapse mt-2" style="background-color: antiquewhite; padding-right: 15px; border-radius: 15px;">
-             <!-- <form action="/purchase/new" method="POST"> -->
-              <div class="container-fluid text-center" id="prodUpdatSuccessMsgDiv">
-                <div class="alert alert-success">
-                  <p id="prodUpdatSuccessMsg"></p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="pur_date"><span style="color: red;">* </span>Pur. Date</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="date" class="form-control" id="pur_date" name="pur_date" placeholder="Purchase Date" required>
-                              </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="pur_date"><span style="color: red;">* </span>Pur. Date</label></h6>
                           </div>
-                </div>
-                <div class="col">
-                  <!-- <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="challan">Challan</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="text" class="form-control" name="challan" id="challan" placeholder="Challan Number" readonly>
-                              </div>
-                          </div> -->
-                </div>
-                <div class="col">
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="invoice"><span style="color: red;">* </span>Invoice</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="text" class="form-control" name="invoice" id="invoice" placeholder="Invoice Number" required>
-                              </div>
+                          <div class="col-lg-8">
+                              <input type="date" class="form-control" id="pur_date" name="pur_date" placeholder="Purchase Date" required>
                           </div>
+                      </div>
+            </div>
+            <div class="col">
+              <div class="row mt-3">
+                <div class="col-lg-3 mt-2 text-right">
+                    <h6><label for="model"><span style="color: red;">*</span>Model</label></h6>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <% if (locals.message) {%>
-                    <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="supplier"><span style="color: red;">* </span>Supplier</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                   <div class="form-group">
-                                <select class="form-control" id="supplier" name="supplier">
-                                  <% if (locals.message[1]) { locals.message[1].forEach(function(s) {%>
-                                    <option><%= s.name %></option>
-                                <% } )}%>
-                                </select>
-                              </div>
-                              </div>
-                          </div>
-                 <% } else {%>
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="supplier"><span style="color: red;">* </span>Supplier</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                <button class="btn btn-outline-info" type="button"><a href="/companies" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Supplier</a></button>
-                              </div>
-                          </div>
-                <% }%>
+                <div class="col-lg-9">
+                  <div class="container">
+                    <input type="text" class="form-control" name="model" id="model_selected" required>
+                  </div>
+                     <div class="container-fluid d-flex justify-content-center">
+                        <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">Select Model</button>
+                        <a href="/products" target="_blank" class="btn btn-sm btn-outline-info" role="button">Add Model</a>
+                     <!-- Modal -->
+                      <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
                         
-                </div>
-                <div class="col">
-                            <div class="row mt-3">
-                              <div class="col-lg-3 mt-2 text-right">
-                                  <h6><label for="model"><span style="color: red;">*</span>Model</label></h6>
-                              </div>
-                              <div class="col-lg-9">
-                                <div class="container">
-                                  <input type="text" class="form-control" name="model" id="model_selected" required>
-                                </div>
-                                   <div class="container-fluid d-flex justify-content-center">
-                                      <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">Select Model</button>
-                                      <a href="/products" target="_blank" class="btn btn-sm btn-outline-info" role="button">Add Model</a>
-                                   <!-- Modal -->
-                                    <div class="modal fade" id="myModal" role="dialog">
-                                      <div class="modal-dialog">
-                                      
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                          </div>
-                                          <div class="modal-body">
-                                            <div class="container model_search_div">
-                                            <div class="container d-flex justify-content-end model_search">
-                                              <div class="container sticky" id="model_search">
-                                                <div class="input-group">
-                                                  <input id="search_input" name="model_search_input" type="text" class="form-control"
-                                                    placeholder="Search Products" />
-                                                  <div class="input-group-append">
-                                                    <button name="model_search_submit_button" class="btn btn-info" type="submit">
-                                                      Search
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div class="container">
-                                              <table class="table">
-                                            <thead>
-                                              <tr>
-                                                <th>Code</th>
-                                                <th>Model</th>
-                                                <th>Brand</th>
-                                                <th>MRP</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody id="model_search_result">
-                                              
-                                            </tbody>
-                                          </table>
-                                            </div>
-                                          </div>
-                                          </div>
-                                        </div>
-                                        
-                                      </div>
+                          <!-- Modal content-->
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="container model_search_div">
+                              <div class="container d-flex justify-content-end model_search">
+                                <div class="container sticky" id="model_search">
+                                  <div class="input-group">
+                                    <input id="search_input" name="model_search_input" type="text" class="form-control"
+                                      placeholder="Search Products" />
+                                    <div class="input-group-append">
+                                      <button name="model_search_submit_button" class="btn btn-info" type="submit">
+                                        Search
+                                      </button>
                                     </div>
-                                   </div>
+                                  </div>
+                                </div>
                               </div>
+                              <div class="container">
+                                <table class="table">
+                              <thead>
+                                <tr>
+                                  <th>Code</th>
+                                  <th>Model</th>
+                                  <th>Brand</th>
+                                  <th>MRP</th>
+                                </tr>
+                              </thead>
+                              <tbody id="model_search_result">
+                                
+                              </tbody>
+                            </table>
+                              </div>
+                            </div>
+                            </div>
                           </div>
+                          
+                        </div>
+                      </div>
+                     </div>
                 </div>
-                <div class="col">
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="qty"><span style="color: red;">* </span>QTY</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="number" id="qty" class="form-control" name="qty" required>
-                              </div>
+            </div>
+             
+            </div>
+            <div class="col">
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="invoice"><span style="color: red;">* </span>Invoice</label></h6>
                           </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <% if (locals.message) {%>
-                    <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="godown"><span style="color: red;">* </span>Godown</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                   <div class="form-group">
-                                <select class="form-control" id="godown" name="godown" required>
-                                  <% if (locals.message[0]) { locals.message[0].forEach(function(s) {%>
-                                    <option><%= s.name %></option>
-                                <% } )}%>
-                                </select>
-                              </div>
-                              </div>
+                          <div class="col-lg-8">
+                              <input type="text" class="form-control" name="invoice" id="invoice" placeholder="Invoice Number" required>
                           </div>
-                 <% } else {%>
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="godown"><span style="color: red;">* </span>Godown</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                <button class="btn btn-outline-info" type="button"><a href="/godown" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Godown/Center</a></button>
-                              </div>
+                      </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <% if (locals.message) {%>
+                <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="supplier"><span style="color: red;">* </span>Supplier</label></h6>
                           </div>
-                <% }%>
-                        
-                </div>
-               <div class="col">
-                  <% if (locals.message) {%>
-                    <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="color"><span style="color: red;">* </span>Color</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                   <div class="form-group">
+                          <div class="col-lg-8">
+                               <div class="form-group">
+                            <select class="form-control" id="supplier" name="supplier">
+                              <% if (locals.message[1]) { locals.message[1].forEach(function(s) {%>
+                                <option><%= s.name %></option>
+                            <% } )}%>
+                            </select>
+                          </div>
+                          </div>
+                      </div>
+             <% } else {%>
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="supplier"><span style="color: red;">* </span>Supplier</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                            <button class="btn btn-outline-info" type="button"><a href="/supplier" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Supplier</a></button>
+                          </div>
+                      </div>
+            <% }%>
+                    
+            </div>
+            <div class="col">
+                 <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="brand">Brand</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                              <input type="text" class="form-control" name="brand" id="brand" placeholder="Brand" readonly>
+                          </div>
+                      </div> 
+            </div>
+            <div class="col">
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="qty"><span style="color: red;">* </span>QTY</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                              <input type="number" id="qty" class="form-control" name="qty" required>
+                          </div>
+                      </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <% if (locals.message) {%>
+                <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="godown"><span style="color: red;">* </span>Godown</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                               <div class="form-group">
+                            <select class="form-control" id="godown" name="godown" required>
+                              <% if (locals.message[0]) { locals.message[0].forEach(function(s) {%>
+                                <option><%= s.name %></option>
+                            <% } )}%>
+                            </select>
+                          </div>
+                          </div>
+                      </div>
+             <% } else {%>
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="godown"><span style="color: red;">* </span>Godown</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                            <button class="btn btn-outline-info" type="button"><a href="/godown" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Godown/Center</a></button>
+                          </div>
+                      </div>
+            <% }%>
+                    
+            </div>
+           <div class="col">
+              <% if (locals.message) {%>
+                <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="color"><span style="color: red;">* </span>Color</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                               <div class="form-group">
                                 <select class="form-control" id="color" name="color">
                                   <option selected>No Color</option>
                                   <% if (locals.message[3]) { locals.message[3].forEach(function(s) {%>
@@ -209,125 +212,122 @@
                                 <% } )}%>
                                 </select>
                               </div>
-                              </div>
                           </div>
-                 <% } else {%>
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="color"><span style="color: red;">* </span>Color</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                <button class="btn btn-outline-info" type="button"><a href="/color" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Color</a></button>
-                              </div>
+                      </div>
+             <% } else {%>
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="color"><span style="color: red;">* </span>Color</label></h6>
                           </div>
-                <% }%>
-                        
-                </div>
-                <div class="col">
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="prev_stock">Prev_stock</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="text" class="form-control" name="prev_stock" id="prev_stock" readonly>
-                              </div>
+                          <div class="col-lg-8">
+                            <button class="btn btn-outline-info" type="button"><a href="/color" class="text-dark" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">Add Color</a></button>
                           </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                        <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="pur_rate">Pur. Rate</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                  <input type="text" class="form-control" name="pur_rate" id="pur_rate" readonly>
-                              </div>
+                      </div>
+            <% }%>
+                    
+            </div>
+            <div class="col">
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="prev_stock">Prev_stock</label></h6>
                           </div>
-                </div>
-                <div class="col">
-                          <div class="row mt-3">
-                              <div class="col-lg-3 mt-2 text-right">
-                                  <h6><label for="mrp"><span style="color: red;">* </span>MRP</label></h6>
-                              </div>
-                              <div class="col-lg-9">
-                                  <input type="number" class="form-control" name="mrp" id="mrp" required>
-                              </div>
+                          <div class="col-lg-8">
+                              <input type="text" class="form-control" name="prev_stock" id="prev_stock" readonly>
                           </div>
-                </div>
-                <div class="col">
-                  <div class="row mt-3">
-                              <div class="col-lg-4 mt-2 text-right">
-                                  <h6><label for="disc_per">Discount Per.</label></h6>
-                              </div>
-                              <div class="col-lg-8">
-                                <div class="container-fluid p-0">
-                                  <input type="number" class="form-control" name="disc_per" id="disc_per" placeholder="Discount Per." maxlength="4">
-                                  <input type="number" class="form-control hide" name="flat_disc" id="flat_disc" placeholder="Flat Discount">
-                                </div>
-                                <div class="container-fluid p-0">
-                                  <button class="btn btn-sm btn-outline-info hide" id="disc_button">Discount Percentage</button>
-                                  <button class="btn btn-sm btn-outline-info" id="flat_disc_button">Flat Discount</button>
-                                </div>
-                              </div>
-                          </div>
-                </div>
-              </div>
-
-              <div class="container-fluid">
-                <button class="btn btn-sm btn-outline-info addNewBC">Add New Barcode</button>
-                <div class="container text-center" id="existingBcDiv" style="overflow: scroll;">
-                  <div class="alert alert-danger">
-                    <h6>Existing Barcode found!</h6>
-                    <input type="hidden" name="existingbcDatabaseReport" id="existingbcDatabaseReport">
-                    <p id="existingbc"></p>
-                  </div>
-                </div>
-              </div>
-              <div class="container-fluid p-3 d-flex justify-content-center flex-wrap" id="barcode">
-                
-              </div>
-              
-              <div class="row d-flex justify-content-end mr-3">
-                    <!-- <input class="btn btn-success mr-2" name="submit" type="submit" id="replaceButton" value="Replace"> -->
-                    <input class="btn btn-sm btn-success mr-2" name="submit" type="button" id="register" value="Add Product">
-                    <input class="btn btn-sm btn-success mr-2" name="submit" type="button" id="registerRevised" value="Add Revised Product">
-                    <!-- <input type="hidden" name="barcode" id="checkBC"> -->
-                    <input type="hidden" name="invoiceData" id="invoiceData">
-                  </div>
-                <div class="container">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>SL</th>
-                        <th>Model</th>
-                        <th>Brand</th>
-                        <th>Qty</th>
-                        <th>MRP</th>
-                        <th>Disc(%)</th>
-                        <th>Flat Disc.</th>
-                        <th>Pur. Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody id="addedModel">
-                      
-                    </tbody>
-                  </table>
-                </div>
-                <div class="container p-4">
-                  <div class="row">
-                    <div class="col">
-                      <h5>Total Purchase Rate is Tk. <span id="TPR">0</span></h5>
-                    </div>
-                    <div class="col d-flex justify-content-end">
-                      <input class="btn btn-sm btn-success mr-2" name="purchase" type="button" id="purchase" value="Purchase" onclick="sendPurchaseData()">
-                    </div>
-                  </div>
-                </div>
-             <!-- </form> -->
+                      </div>
             </div>
           </div>
-         
+          <div class="row">
+            <div class="col">
+                    <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="pur_rate">Pur. Rate</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                              <input type="text" class="form-control" name="pur_rate" id="pur_rate" readonly>
+                          </div>
+                      </div>
+            </div>
+            <div class="col">
+                      <div class="row mt-3">
+                          <div class="col-lg-3 mt-2 text-right">
+                              <h6><label for="mrp"><span style="color: red;">* </span>MRP</label></h6>
+                          </div>
+                          <div class="col-lg-9">
+                              <input type="number" class="form-control" name="mrp" id="mrp" required>
+                          </div>
+                      </div>
+            </div>
+            <div class="col">
+              <div class="row mt-3">
+                          <div class="col-lg-4 mt-2 text-right">
+                              <h6><label for="disc_per">Discount Per.</label></h6>
+                          </div>
+                          <div class="col-lg-8">
+                            <div class="container-fluid p-0">
+                              <input type="number" class="form-control" name="disc_per" id="disc_per" placeholder="Discount Per." maxlength="4">
+                              <input type="number" class="form-control hide" name="flat_disc" id="flat_disc" placeholder="Flat Discount">
+                            </div>
+                            <div class="container-fluid p-0">
+                              <button class="btn btn-sm btn-outline-info hide" id="disc_button">Discount Percentage</button>
+                              <button class="btn btn-sm btn-outline-info" id="flat_disc_button">Flat Discount</button>
+                            </div>
+                          </div>
+                      </div>
+            </div>
+          </div>
+
+          <div class="container-fluid">
+            <button class="btn btn-sm btn-outline-info addNewBC">Add New Barcode</button>
+            <div class="container text-center" id="existingBcDiv" style="overflow: scroll;">
+              <div class="alert alert-danger">
+                <h6>Existing Barcode found!</h6>
+                <input type="hidden" name="existingbcDatabaseReport" id="existingbcDatabaseReport">
+                <p id="existingbc"></p>
+              </div>
+            </div>
+          </div>
+          <div class="container-fluid p-3 d-flex justify-content-center flex-wrap" id="barcode">
+            
+          </div>
+          
+          <div class="row d-flex justify-content-end mr-3">
+                <!-- <input class="btn btn-success mr-2" name="submit" type="submit" id="replaceButton" value="Replace"> -->
+                <input class="btn btn-sm btn-success mr-2" name="submit" type="button" id="register" value="Add Product">
+                <input class="btn btn-sm btn-success mr-2" name="submit" type="button" id="registerRevised" value="Add Revised Product">
+                <!-- <input type="hidden" name="barcode" id="checkBC"> -->
+                <input type="hidden" name="invoiceData" id="invoiceData">
+              </div>
+            <div class="container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>SL</th>
+                    <th>Model</th>
+                    <th>Brand</th>
+                    <th>Qty</th>
+                    <th>MRP</th>
+                    <th>Disc(%)</th>
+                    <th>Flat Disc.</th>
+                    <th>Pur. Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="addedModel">
+                  
+                </tbody>
+              </table>
+            </div>
+            <div class="container p-4">
+              <div class="row">
+                <div class="col">
+                  <h5>Total Purchase Rate is Tk. <span id="TPR">0</span></h5>
+                </div>
+                <div class="col d-flex justify-content-end">
+                  <input class="btn btn-sm btn-success mr-2" name="purchase" type="button" id="purchase" value="Purchase" onclick="sendPurchaseData()">
+                </div>
+              </div>
+            </div>
+         <!-- </form> -->
         </div>
         
       </div>
@@ -337,15 +337,12 @@
       </div>
       
       <div class="container mt-2">
-
-        <div class="container d-flex justify-content-end">
-          <!-- <button class="btn btn-outline-info showChallanButton" data-toggle="collapse" data-target="#showChallan">
-            All Challan
-          </button> -->
-        </div>
-       
+        
         <div id="showChallan" class="collapse mt-2"
           style="background-color: antiquewhite; padding-right: 15px; border-radius: 15px;">
+          <div class="container-fluid p-3">
+            <h4>Existing Challan</h4>
+          </div>
           <div class="container p-2">
             <div class="row">
               <div class="col"></div>
@@ -382,7 +379,44 @@
               </tbody>
             </table>
         </div>
-        
+      </div>
+      <div class="container">
+        <div id="purchaseReturn" class="collapse mt-2 p-3" style="border-radius: 15px;">
+          <div class="container-fluid p-0">
+            <h4>Purchase Return</h4>
+          </div>
+          <div class="input-group" style="max-width: 400px;">
+            <input id="return_input" name="return_input" type="text" class="form-control"
+              placeholder="Barcode" />
+            <div class="input-group-append">
+              <button name="search_return_input_button" class="btn btn-info" type="submit">
+                Search Product
+              </button>
+            </div>
+          </div>
+          <div class="container">
+            <div class="container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Brand</th>
+                    <th>MRP</th>
+                    <th>Disc(%)</th>
+                    <th>Flat Disc.</th>
+                    <th>Pur. Rate</th>
+                    <th>Supplier</th>
+                    <th>R. Date</th>
+                    <th>Return</th>
+                  </tr>
+                </thead>
+                <tbody id="addedModelForReturn">
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -491,6 +525,22 @@
         $('#editForm').empty()
       })  
 
+      $("body").on("click", "#return_input_button", (e) => {
+        let barcode = e.target.getAttribute("barcode")
+        let returnDate = $("#returnDate").val()
+         $.ajax({
+          url: "/purchase/return",
+          type: "post",
+          data: {barcode : barcode, returnDate : returnDate},
+          success: (data) => {
+            $("#addedModelForReturn").empty()
+            $("#return_input").val("")
+            alert(data)   
+            location.reload()   
+          }
+        })
+      })
+ 
       $(`button[name="model_search_submit_button"]`).click(() => {
         let SI = $(`input[name="model_search_input"]`).val()
         $.ajax({
@@ -510,7 +560,7 @@
               const data = result[i];
                   $('#model_search_result').append(`
                   <tr>
-                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" mrp="${data.mrp}" product_code="${data.id}" id="${count}" value="${data.product_name}"></td>
+                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" mrp="${data.mrp}" brand="${data.brand}" product_code="${data.id}" id="${count}" value="${data.product_name}"></td>
                     <td>${data.product_name}</td>
                     <td>${data.brand}</td>
                     <td>${data.mrp}</td>
@@ -570,8 +620,10 @@
       function addModel(a) {
         let val = document.getElementById(a).getAttribute('value');
         let mrp = document.getElementById(a).getAttribute('mrp');
+        let brand = document.getElementById(a).getAttribute('brand');
         $('#model_selected').val('')
         $('#model_selected').val(val)
+        $('#brand').val(brand)
         $('#mrp').val(mrp)
         $('#model_search_result').empty()
         $.ajax({
@@ -586,11 +638,21 @@
 
       $("body").on("click", ".removeBC", (e) => {
         let divId = e.target.getAttribute("divId")
+        let bc = $(`#${divId}`).children(".bc").val()
+          if (confirm("Removing the barcode will remove it from the database as well. Are you sure to remove this barcode?")) {
            $(`#${divId}`).remove()
-        let val = $('#qty').val()
-        let int = Number(val)
-        let qty = int - 1;
-        $('#qty').val(qty)
+           let val = $('#qty').val()
+          let int = Number(val)
+          let qty = int - 1;
+          $('#qty').val(qty)
+            $.ajax({
+            url: "/purchase/removeBcIfExist",
+            type: "post",
+            data: {bc: bc},
+            success: (data) => {}
+           })
+          }
+        
         }) 
 
       $("#disc_per").keyup(() => {
@@ -716,10 +778,10 @@
               </td> 
               <td>
                 ${e[0]}
-              </td>  
+              </td>
               <td>
-                ${e[6]}
-              </td> 
+                ${e[13]}
+              </td>  
               <td>
                 ${e[1]}
               </td>
@@ -793,7 +855,10 @@
       })
 
       $(`body`).on("click", '#editChallan', (e) => {
-        alert("Click the 'creat new' button!")
+        // alert("Click the 'create new' button!")
+        purchaseData = [];
+        $("#showChallanTable").empty()
+        $(`button[name="CreateNewButton"]`).click()
         let invoice = e.target.getAttribute("invoice")
         $.ajax({
           url: "/purchase/challan/edit",
@@ -823,7 +888,7 @@
                             const elem = result[j];
                             bc.push(elem.barcode)
                           }
-                          let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount, "+"]
+                          let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount, e.brand, "+"]
                           product[2] = bc;
                           pushProduct(product)
                         let netPurchase_2 = 0
@@ -839,10 +904,10 @@
                             </td> 
                             <td>
                               ${e[0]}
-                            </td>  
+                            </td>
                             <td>
-                              ${e[6]}
-                            </td> 
+                              ${e[13]}
+                            </td>  
                             <td>
                               ${e[1]}
                             </td> 
@@ -929,6 +994,7 @@
         $('#purchase').hide();
         let pid = e.target.getAttribute("pid")
         $('#model_selected').val(`${purchaseData[pid][0]}`)
+        $('#brand').val(`${purchaseData[pid][13]}`)
         $('#qty').val(`${purchaseData[pid][1]}`)
         $('#invoice').val(`${purchaseData[pid][4]}`)
         $('#pur_rate').val(`${purchaseData[pid][9]}`)
@@ -970,10 +1036,10 @@
                             </td> 
                             <td>
                               ${e[0]}
-                            </td>  
-                            <td>
-                              ${e[6]}
                             </td> 
+                            <td>
+                              ${e[13]}
+                            </td>
                             <td>
                               ${e[1]}
                             </td> 
@@ -1060,9 +1126,9 @@
                             </td> 
                             <td>
                               ${e[0]}
-                            </td>  
+                            </td> 
                             <td>
-                              ${e[6]}
+                              ${e[13]}
                             </td> 
                             <td>
                               ${e[1]}
@@ -1110,7 +1176,7 @@
                               ${e[0]}
                             </td>  
                             <td>
-                              ${e[6]}
+                              ${e[13]}
                             </td> 
                             <td>
                               ${e[1]}
@@ -1148,6 +1214,7 @@
                           let invoice = $('#invoice').val()
                           let supplier = $('#supplier').val()
                           let model = $('#model_selected').val()
+                          let brand = $('#brand').val()
                           let qty = $('#qty').val()
                           let godown = $('#godown').val()
                           let color = $('#color').val()
@@ -1164,7 +1231,7 @@
                             flat_disc = 0
                             pur_rate = mrp
                           }
-                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, "+"]
+                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, "+"]
                         let confirmRequiredInput = [model, qty, pur_date, invoice, supplier, godown, color, mrp]
                         for (let i = 0; i < confirmRequiredInput.length; i++) {
                           const elem = confirmRequiredInput[i];
@@ -1180,6 +1247,7 @@
                         $('#disc_per').val("")
                         $('#flat_disc').val("")
                         $('#pur_rate').val("")
+                        $('#brand').val("")
                         $('#mrp').val("")
                         $('#barcode').empty();
                         $("#addedModel").empty();
@@ -1198,7 +1266,7 @@
                               ${e[0]}
                             </td>  
                             <td>
-                              ${e[6]}
+                              ${e[13]}
                             </td> 
                             <td>
                               ${e[1]}
@@ -1264,6 +1332,8 @@
        
         if (isBCOk == true) {
           if (modelValidityCheck() == true) {
+          alert("model check")
+
                       $("#addedModel").empty()
                       if (purchaseData.length > 0) {
                       let netPurchase_2 = 0
@@ -1278,9 +1348,9 @@
                             </td> 
                             <td>
                               ${e[0]}
-                            </td>  
+                            </td>
                             <td>
-                              ${e[6]}
+                              ${e[13]}
                             </td> 
                             <td>
                               ${e[1]}
@@ -1312,12 +1382,12 @@
                     }
                       
                     } else {
-
                       let pur_date = $('#pur_date').val()
                           let challan = $('#challan').val()
                           let invoice = $('#invoice').val()
                           let supplier = $('#supplier').val()
                           let model = $('#model_selected').val()
+                          let brand = $('#brand').val()
                           let qty = $('#qty').val()
                           let godown = $('#godown').val()
                           let color = $('#color').val()
@@ -1334,7 +1404,7 @@
                             flat_disc = 0
                             pur_rate = mrp
                           }
-                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, "+"]
+                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, "+"]
                         let confirmRequiredInput = [model, qty, pur_date, invoice, supplier, godown, color, mrp]
                         for (let i = 0; i < confirmRequiredInput.length; i++) {
                           const elem = confirmRequiredInput[i];
@@ -1368,9 +1438,9 @@
                             </td> 
                             <td>
                               ${e[0]}
-                            </td>  
+                            </td> 
                             <td>
-                              ${e[6]}
+                              ${e[13]}
                             </td> 
                             <td>
                               ${e[1]}
@@ -1405,6 +1475,59 @@
         
       })
 
+      $(`button[name="search_return_input_button"]`).click(() => {
+        let barcode = $("#return_input").val()
+        $.ajax({
+          url: "/purchase/getDataForReturn",
+          type: "post",
+          data: {barcode: barcode},
+          success: (e) => {
+            if (e !== "Barcode not found!") {
+            if (e[0].status == "Returned") {
+              alert("This product has already been returned!")
+            } else {
+            $("#addedModelForReturn").empty()
+            $("#addedModelForReturn").append(`
+                          <tr>
+                            <td>
+                              ${e[0].model}
+                            </td>  
+                            <td>
+                              ${e[0].brand}
+                            </td> 
+                            <td>
+                              ${e[0].mrp}
+                            </td> 
+                            <td>
+                              ${e[0].disc_per}
+                            </td>
+                            <td>
+                              ${e[0].flat_disc_per}
+                            </td> 
+                            <td>
+                              ${e[0].pur_rate}
+                            </td> 
+                            <td>
+                              ${e[0].supplier}
+                            </td>
+                            <td>
+                                <input type="date" name="returnDate" id="returnDate">
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-danger" id="return_input_button" barcode="${e[0].barcode}">Return</button>
+                            </td>
+                          </tr>
+                        `)
+            }
+          } else {
+            alert(e)
+          }
+          }
+        })
+       
+      })
+      
+
       function sendPurchaseData() {
 
         $("#invoiceData").val(purchaseData)
@@ -1422,8 +1545,9 @@
                 $("#TPR").text("0")
                 $('#invoice').val("")
                 purchaseData = []
-                $("#prodUpdatSuccessMsg").text(data.prodUpdatSuccessMsg)
-                $("#prodUpdatSuccessMsgDiv").show()
+                alert(data.prodUpdatSuccessMsg)
+                // $("#prodUpdatSuccessMsg").text(data.prodUpdatSuccessMsg)
+                // $("#prodUpdatSuccessMsgDiv").show()
                 location.reload()
               }
             }

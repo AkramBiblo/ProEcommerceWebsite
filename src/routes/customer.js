@@ -36,8 +36,7 @@ customer.get("/", (req, res) => {
   });
 });
 
-customer.post(
-  "/new", (req, res) => {
+customer.post("/new", (req, res) => {
     let name = req.body.name;
     let p_address = req.body.p_address;
     let c_type = req.body.c_type;
@@ -86,10 +85,9 @@ customer.post(
 
 customer.post("/edit", (req, res) => {
   let cid = req.body.cid;
-  console.log(cid)
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  let sql = `SELECT * FROM customer WHERE id = "${cid}"`;
+  let sql = `SELECT * FROM customer WHERE customer_id = "${cid}"`;
   con.query(sql, (err, result) => {
     let html = `<form action="/customer/edit_update" method="POST">
               <div class="container mt-2">
@@ -174,7 +172,7 @@ customer.post("/edit", (req, res) => {
                       </div>
                   </div>
                   <div class="row d-flex justify-content-end mt-4 mr-3">
-                    <input value="${result[0].id}" name="cid" type="hidden">
+                    <input value="${result[0].customer_id}" name="cid" type="hidden">
                     <input class="btn btn-success mr-2" name="submit" type="submit" value="Update">
                 </div>
               </div>
@@ -197,7 +195,7 @@ customer.post("/edit_update", (req, res) => {
 
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  let sql = `UPDATE customer SET name = "${name}", address = "${p_address}", contact = "${contact}", nid = "${NID}", email = "${email}", g_name = "${g_name}", g_address = "${g_address}", g_nid = "${G_NID}", g_contact = "${g_contact}" WHERE id = "${cid}"`;
+  let sql = `UPDATE customer SET name = "${name}", address = "${p_address}", contact = "${contact}", nid = "${NID}", email = "${email}", g_name = "${g_name}", g_address = "${g_address}", g_nid = "${G_NID}", g_contact = "${g_contact}" WHERE customer_id = "${cid}"`;
   con.query(sql, (err, result) => {
     let sql = `SELECT * FROM customer`;
     con.query(sql, (err, result) => {

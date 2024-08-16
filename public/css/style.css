@@ -9,7 +9,7 @@
   .navDiv {
     max-width: 300px;
           padding: 20px;
-          margin: auto;
+          /* margin: auto; */
           border-radius: 10px;
           background-color: rgb(5, 5, 5);
           color:aqua

@@ -36,11 +36,9 @@ supplier.get("/", (req, res) => {
   });
 });
 
-supplier.post(
-  "/new", (req, res) => {
+supplier.post("/new", (req, res) => {
     let name = req.body.name;
     let p_address = req.body.p_address;
-    let c_type = req.body.c_type;
     let contact = req.body.contact;
     let NID = req.body.NID;
     let email = req.body.email;
@@ -56,8 +54,8 @@ supplier.post(
     let sql_query = `SELECT * FROM supplier WHERE name = "${name}" OR contact = "${contact}"`;
     con.query(sql_query, (err, result) => {
       if (result.length <= 0) {
-        let sql = `INSERT INTO supplier (name, c_type, address, contact, nid, email, g_name, g_address, g_contact, g_nid, balance)
-        VALUES ("${name}", "${c_type}", "${p_address}", "${contact}", "${NID}", "${email}", "${g_name}", "${g_address}", "${g_contact}", "${G_NID}", "${balance}")`;
+        let sql = `INSERT INTO supplier (name, address, contact, nid, email, g_name, g_address, g_contact, g_nid, balance)
+        VALUES ("${name}", "${p_address}", "${contact}", "${NID}", "${email}", "${g_name}", "${g_address}", "${g_contact}", "${G_NID}", "${balance}")`;
         con.query(sql, (err, result) => {
           let sql = `SELECT * FROM supplier`;
           con.query(sql, (err, result) => {

@@ -172,13 +172,13 @@
           <tbody>
             <% if (locals.message !== null) { message.forEach(function(employee) {%>
             <tr>
-            <td><%= employee.id %></td>
+            <td><%= employee.customer_id %></td>
             <td><%= employee.name %></td>
             <td><%= employee.c_type %></td>
             <td><%= employee.address %></td>
             <td><%= employee.contact %></td>
             <td>
-              <button cid="<%= employee.id %>" name="edit" class="btn btn-warning">Edit</button>
+              <button cid="<%= employee.customer_id %>" name="edit" class="btn btn-warning">Edit</button>
             </td>
             <td>
               <form action="/customer/customer_delete" method="post">
@@ -216,7 +216,7 @@
               const data = result[i];
                   $('tbody').append(`
                   <tr>
-                  <td>${data.id}</td>
+                  <td>${data.customer_id}</td>
                     <td>${data.name}</td>
                     <td>${data.c_type}</td>
                     <td>${data.address}</td>
@@ -246,6 +246,8 @@
           },
           success: (data) => {
             $('#editForm').html(data)
+            $('tbody').empty();
+
           }
         })
       
@@ -262,6 +264,8 @@
           },
           success: (data) => {
             $('#editForm').html(data)
+            $('tbody').empty();
+
           }
         })
       });

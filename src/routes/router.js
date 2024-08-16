@@ -11,6 +11,12 @@ var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 router.get("/", (req, res) => {
+//   const getDBInfo = require("../../db");
+//   const con = getDBInfo.con;
+//   con.connect(() => {
+//     let sql = `CREATE TABLE supplier AS SELECT * FROM customer;`;
+//     con.query(sql, () => {console.log('Table created')})
+// })
   res.render("admin", {
     title: "admin",
   });
