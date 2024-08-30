@@ -36,6 +36,58 @@ supplier.get("/", (req, res) => {
   });
 });
 
+supplier.get("/ledger", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM supplier`;
+  con.query(sql, (err, result) => {
+    res.render("supplier_ledger", {
+      supplier: result,
+      title: "suppliers",
+    });
+  });
+});
+
+supplier.post("/get_supplier_ledger", (req, res) => {
+  let supplier = req.body.supplier;
+  let from_date = req.body.from_date;
+  let to_date = req.body.to_date
+  
+  let from = new Date(`${from_date}`);
+  let to = new Date(`${to_date}`);
+
+  
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  
+  let sql = `SELECT * FROM purchase_challan WHERE supplier = "${supplier}" AND date BETWEEN "${from_date}" AND "${to_date}"`;
+  con.query(sql, (err, result) => {
+    let ledgerData = []
+    let purchaseData = result;
+    for (let i = 0; i < purchaseData.length; i++) {
+      const purchase = purchaseData[i];
+        ledgerData.push(purchase)
+    }
+    let sql = `SELECT * FROM payments WHERE payment_type = "supplier_payment" AND date BETWEEN "${from_date}" AND "${to_date}"`;
+    con.query(sql, (err, result) => {
+      if (result.length > 0) {
+      for (let i = 0; i < result.length; i++) {
+        const payment = result[i];
+        if (payment.receiver == supplier) {
+          ledgerData.push(payment)
+        }
+      }
+      }
+      ledgerData.sort((a, b) => a.date - b.date);
+      
+      res.send(ledgerData)
+
+    })
+    // AND date >= "${from}" AND date <= "${to}"
+    
+  });
+});
+
 supplier.post("/new", (req, res) => {
     let name = req.body.name;
     let p_address = req.body.p_address;
@@ -79,8 +131,6 @@ supplier.post("/new", (req, res) => {
       }
     });
   });
-
-
 
 supplier.post("/edit", (req, res) => {
   let cid = req.body.cid;

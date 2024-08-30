@@ -8,6 +8,7 @@ const path = require("path");
 var bodyParser = require("body-parser");
 const e = require("express");
 const { match } = require("assert");
+const { subtle } = require("crypto");
 // create application/json parser
 var jsonParser = bodyParser.json();
 // create application/x-www-form-urlencoded parser
@@ -247,20 +248,18 @@ purchase.post("/new", (req, res) => {
         let sqlRemoveQry = `SELECT * FROM purchase WHERE barcode = "${e}"`
         con.query(sqlRemoveQry, (err, result) => {
           if (result.length > 0) {
-            let sql = `DELETE FROM purchase WHERE barcode = "${e}"`
+            let sql = `UPDATE purchase SET date = "${pur_date}", supplier = "${supplier}", invoice_no = "${invoice}", model = "${model}", brand = "${brand}", godown = "${godown}", color = "${color}", pur_rate = "${pur_rate}", disc_per = "${disc_per}", mrp = "${mrp}", disc_amt = "${disc_amt}", flat_disc_amount = "${flat_disc}", status = "Stock" WHERE barcode = "${e}"`
+            // let sql = `DELETE FROM purchase WHERE barcode = "${e}"`
+
             con.query(sql, (err, result) => {
-              let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, brand, godown, color, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
-                  VALUES ("${pur_date}", "${supplier}", "${invoice}", "${model}", "${brand}", "${godown}", "${color}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${e}", "Stock")`;
-                  con.query(sql, (err, result) => {
-                    
-                  })
+              // let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, brand, godown, color, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
+                  // VALUES ("${pur_date}", "${supplier}", "${invoice}", "${model}", "${brand}", "${godown}", "${color}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${e}", "Stock")`;
+                  // con.query(sql, (err, result) => {})
             })
           } else {
             let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, brand, godown, color, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
             VALUES ("${pur_date}", "${supplier}", "${invoice}", "${model}", "${brand}", "${godown}", "${color}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${e}", "Stock")`;
-            con.query(sql, (err, result) => {
-              
-            })
+            con.query(sql, (err, result) => {})
           }
         })
       }
@@ -269,16 +268,43 @@ purchase.post("/new", (req, res) => {
     let sql = `SELECT * FROM purchase_challan WHERE invoice_no = "${_invoice}"`
       con.query(sql, (err, result) => {
         if (result.length > 0) {
-          let sql_ = `DELETE FROM purchase_challan WHERE invoice_no = "${_invoice}"`
+          
+          updateSupplier(0, _supplier, result[0].net_total)
+          
+
+          let sql_ = `UPDATE purchase_challan SET date = "${_pur_date}", net_total = "${net_total}", supplier = "${_supplier}", qty = "${_qty}" WHERE invoice_no = "${_invoice}"`
                       con.query(sql_, (err, result) => {
-                        let sql = `INSERT INTO purchase_challan (invoice_no, pur_date, net_total, supplier, qty)
-                        VALUES ("${_invoice}", "${_pur_date}", "${net_total}", "${_supplier}", "${_qty}")`
-                        con.query(sql, (err, result) => {
+                        // let updateSupplier = `SELECT * FROM supplier WHERE name = "${_supplier}"`
+                        // con.query(updateSupplier, (err, result) => {
+                        //   let balance = result[0].balance;
+                        //   let sname = result[0].name;
+                        //   balance = Number(balance) - Number(net_total)
+
+                        //   let updateBalance = `UPDATE supplier SET balance = "${balance}" WHERE name = "${sname}"`
+                        //   con.query(updateBalance, (err, result) => {})
+                        // })
+                        // let sql = `INSERT INTO purchase_challan (invoice_no, pur_date, net_total, supplier, qty)
+                        // VALUES ("${_invoice}", "${_pur_date}", "${net_total}", "${_supplier}", "${_qty}")`
+                        // con.query(sql, (err, result) => {
+                          setTimeout(()=> {
+                            updateSupplier(net_total, _supplier, 0)
+                          }, 3000)
                           res.send({ prodUpdatSuccessMsg: "Purchase updated successfully!!!" })
-                        })
+                        // })
                       })
         } else {
-          let sql = `INSERT INTO purchase_challan (invoice_no, pur_date, net_total, supplier, qty)
+          updateSupplier(net_total, _supplier, 0)
+          // let updateSupplier = `SELECT * FROM supplier WHERE name = "${_supplier}"`
+          //               con.query(updateSupplier, (err, result) => {
+          //                 let balance = result[0].balance;
+          //                 let sname = result[0].name;
+          //                 balance = Number(balance) - Number(net_total)
+
+          //                 let updateBalance = `UPDATE supplier SET balance = "${balance}" WHERE name = "${sname}"`
+          //                 con.query(updateBalance, (err, result) => {
+          //                 })
+          //               })
+          let sql = `INSERT INTO purchase_challan (invoice_no, date, net_total, supplier, qty)
                         VALUES ("${_invoice}", "${_pur_date}", "${net_total}", "${_supplier}", "${_qty}")`
                         con.query(sql, (err, result) => {
                           res.send({ prodUpdatSuccessMsg: "Purchase updated successfully!!!" })
@@ -286,6 +312,24 @@ purchase.post("/new", (req, res) => {
         }
       })
   });
+
+  function updateSupplier(pur_rate, supplier, editedProductValue) {
+    const getDBInfo = require("../../db");
+    const con = getDBInfo.con;
+    con.connect((err) => {
+      let sql = `SELECT * FROM supplier WHERE name = "${supplier}"`
+      con.query(sql, (err, result) => {
+        let balance = result[0].balance;
+  
+        let SubTotal = Number(balance) + Number(editedProductValue)
+        let netBalance = SubTotal - Number(pur_rate)
+        
+        let sql = `UPDATE supplier SET balance = "${netBalance}" WHERE name = "${supplier}"`
+        con.query(sql, (err, result) => {
+        })
+      })
+    })
+  }
 
 purchase.post("/challan", (req, res) => {
   const getDBInfo = require("../../db");
@@ -303,7 +347,7 @@ purchase.post("/challan/edit", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
   con.connect((err) => {
-    let sql = `SELECT * FROM purchase WHERE NOT status = "Returned" AND invoice_no = "${invoice}"`
+    let sql = `SELECT * FROM purchase WHERE invoice_no = "${invoice}" AND pur_return_date = ""`
     con.query(sql, (err, result) => {
       res.send(result)
     })
@@ -335,6 +379,18 @@ purchase.post("/getDataForReturn", (req, res) => {
       } else {
         res.send("Barcode not found!")
       }
+    })
+  })
+})
+
+purchase.post("/getSupplierBalance", (req, res) => {
+  let supplier = req.body.supplier;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  con.connect((err) => {
+  let sql = `SELECT * FROM supplier WHERE name = "${supplier}"`;
+    con.query(sql, (err, result) => {
+      res.send(result)
     })
   })
 })
@@ -483,6 +539,14 @@ purchase.post("/purchase_delete", (req, res) => {
   });
 });
 
+purchase.post("/removedProduct", (req, res) => {
+  let bc = req.body.bc;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM purchase WHERE barcode = "${bc}"`;
+  con.query(sql, (err, result) => {});
+})
+
 purchase.post("/purchase_search", (req, res) => {
   let SI = req.body.SI;
   const getDBInfo = require("../../db");
@@ -515,7 +579,13 @@ purchase.post("/remove_invoice", (req, res) => {
   let invoice = req.body.invoice;
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
-  
+  let sql_1 = `SELECT * FROM purchase_challan WHERE invoice_no = "${invoice}"`
+  con.query (sql_1, (err, result) => {
+    let ChallanTotal = result[0].net_total;
+    let supplier = result[0].supplier;
+    updateSupplier(0, supplier, ChallanTotal)
+    
+  })
   let sql = `DELETE FROM purchase_challan WHERE invoice_no = "${invoice}"`;
   con.query(sql, (err, result) => {
     let sql_2 = `DELETE FROM purchase WHERE invoice_no = "${invoice}"`;
@@ -546,8 +616,10 @@ purchase.post("/return", (req, res) => {
     let bc = result[0].barcode;
     let invoice = result[0].invoice_no;
     let pur_rate = result[0].pur_rate;
+    let supplier = result[0].supplier;
      let sql_2 = `UPDATE purchase SET status = "Returned", pur_return_date = "${returnDate}" WHERE barcode = "${bc}"`;
     con.query(sql_2, (err, result) => {
+      updateSupplier(0, supplier, pur_rate)
       let sql_3 = `SELECT * FROM purchase_challan WHERE invoice_no = "${invoice}"`;
       con.query(sql_3, (err, result) => {
         let invoice_no = result[0].invoice_no;
@@ -563,5 +635,7 @@ purchase.post("/return", (req, res) => {
     })
   });
 })
+
+
 
 module.exports = purchase;

@@ -128,6 +128,7 @@
                           <div class="col-lg-8">
                                <div class="form-group">
                             <select class="form-control" id="supplier" name="supplier">
+                              <option value="Select Supplier" selected>Select Supplier</option>
                               <% if (locals.message[1]) { locals.message[1].forEach(function(s) {%>
                                 <option><%= s.name %></option>
                             <% } )}%>
@@ -145,7 +146,22 @@
                           </div>
                       </div>
             <% }%>
-                    
+              <!-- <div class="row mt-3">
+                <div class="col-lg-4 mt-2 text-right">
+                    <h6><label for="balance">Balance</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="supplierBalance" id="supplierBalance" readonly>    
+                </div>
+            </div>  -->
+            <!-- <div class="row mt-3 editSupplierInputDiv">
+                <div class="col-lg-4 mt-2 text-right">
+                    <h6><label for="supplierEdit">Supplier</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" name="editSupplierInput" id="editSupplierInput" readonly>    
+                </div>
+            </div>  -->
             </div>
             <div class="col">
                  <div class="row mt-3">
@@ -427,6 +443,7 @@
     }
     $(document).ready(() => {
       $('#purchase').hide();
+      // $('.editSupplierInputDiv').hide()
       $("#registerRevised").hide()
       $("#prodUpdatSuccessMsgDiv").hide()
       $("#existingBcDiv").hide()
@@ -524,6 +541,18 @@
       $("body").on("click", "#cancel", () => {
         $('#editForm').empty()
       })  
+
+      // $("#supplier").change(() => {
+      //   let supplier = $("#supplier").val()
+      //   $.ajax({
+      //     url: "/purchase/getSupplierBalance",
+      //     type: "post",
+      //     data: {supplier: supplier},
+      //     success: (data) => {
+      //       $("#supplierBalance").val(data[0].balance)
+      //     }
+      //   })        
+      // })
 
       $("body").on("click", "#return_input_button", (e) => {
         let barcode = e.target.getAttribute("barcode")
@@ -755,62 +784,71 @@
 
       $(`body`).on("click", '#removeProduct', (e) => {
         let pid = e.target.getAttribute("pid")
-        const index = purchaseData.indexOf(purchaseData[pid]);
-        if (index !== -1) {
-          purchaseData.splice(index, 1);
-        }
+        let bc = e.target.getAttribute("bc")
+        if (confirm("Are you sure to remove this product?")) {
+          $.ajax({
+            url: "/purchase/removedProduct",
+            type: "post",
+            data: {bc : bc},
+            success: () => {}
+          })
+          const index = purchaseData.indexOf(purchaseData[pid]);
+                if (index !== -1) {
+                  purchaseData.splice(index, 1);
+                }
 
-        $("#addedModel").empty()
-        
-        if (purchaseData.length > 0) {
-          let count = 1
-          let totalPurchase = 0
-          for (let i = 0; i < purchaseData.length; i++) {
-            const e = purchaseData[i];
-            let qty = e[1]
-            let pur_rate = e[9]
-            let netPurchase = Number(qty) * Number(pur_rate)
-            totalPurchase += netPurchase
-            $("#addedModel").append(`
-            <tr id="${i}">
-              <td>
-                ${count}
-              </td> 
-              <td>
-                ${e[0]}
-              </td>
-              <td>
-                ${e[13]}
-              </td>  
-              <td>
-                ${e[1]}
-              </td>
-              <td>
-                ${e[10]}
-              </td>
-              <td>
-                ${e[11]}
-              </td> 
-              <td>
-                ${e[12]}
-              </td> 
-              <td>
-                ${e[9]}
-              </td> 
-              <td>
-                <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
-              </td>
-            </tr>
-          `)
-            count++
-          }
-          $("#TPR").text(totalPurchase)
+                $("#addedModel").empty()
+                
+                if (purchaseData.length > 0) {
+                  let count = 1
+                  let totalPurchase = 0
+                  for (let i = 0; i < purchaseData.length; i++) {
+                    const e = purchaseData[i];
+                    let qty = e[1]
+                    let pur_rate = e[9]
+                    let netPurchase = Number(qty) * Number(pur_rate)
+                    totalPurchase += netPurchase
+                    $("#addedModel").append(`
+                    <tr id="${i}">
+                      <td>
+                        ${count}
+                      </td> 
+                      <td>
+                        ${e[0]}
+                      </td>
+                      <td>
+                        ${e[13]}
+                      </td>  
+                      <td>
+                        ${e[1]}
+                      </td>
+                      <td>
+                        ${e[10]}
+                      </td>
+                      <td>
+                        ${e[11]}
+                      </td> 
+                      <td>
+                        ${e[12]}
+                      </td> 
+                      <td>
+                        ${e[9]}
+                      </td> 
+                      <td>
+                        <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
+                      </td>
+                    </tr>
+                  `)
+                    count++
+                  }
+                  $("#TPR").text(totalPurchase)
 
-        } else {
-          $("#TPR").text("0")
+                } else {
+                  $("#TPR").text("0")
+                }
         }
         
       })
@@ -927,7 +965,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}" challanEdit="True">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -970,7 +1008,7 @@
                           //                   <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                           //                 </td>
                           //                 <td>
-                          //                   <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                          //                   <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                           //                 </td>
                           //               </tr>
                           //             `)
@@ -989,10 +1027,13 @@
         let challanEdit = e.target.getAttribute("challanEdit")
         if (challanEdit=="True") {
           $('#register').hide();
+          // $('.renderSupplier').hide();
           $("#registerRevised").show()
+          // $('.editSupplierInputDiv').show()
         }
         $('#purchase').hide();
         let pid = e.target.getAttribute("pid")
+        $('#editSupplierInput').val(`${purchaseData[pid][5]}`)
         $('#model_selected').val(`${purchaseData[pid][0]}`)
         $('#brand').val(`${purchaseData[pid][13]}`)
         $('#qty').val(`${purchaseData[pid][1]}`)
@@ -1059,7 +1100,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -1080,6 +1121,11 @@
 
       $(`body`).on("click", '#register', () => {
         $("#existingBcDiv").hide()
+        let s = $("#supplier").val()
+        if (s == "Select Supplier") {
+          alert("Select Supplier")
+          return
+        }
         let bc = []
         let isBCOk = true;
         let isBarcodeEmpty = false;
@@ -1149,7 +1195,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -1197,7 +1243,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -1287,7 +1333,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -1308,6 +1354,11 @@
 
       $(`body`).on("click", '#registerRevised', () => {
         $("#existingBcDiv").hide()
+        let s = $("#supplier").val()
+        if (s == "Select Supplier") {
+          alert("Select Supplier")
+          return
+        }
         let bc = []
         let isBCOk = true;
         let isBarcodeEmpty = false;
@@ -1332,8 +1383,6 @@
        
         if (isBCOk == true) {
           if (modelValidityCheck() == true) {
-          alert("model check")
-
                       $("#addedModel").empty()
                       if (purchaseData.length > 0) {
                       let netPurchase_2 = 0
@@ -1371,7 +1420,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)
@@ -1461,7 +1510,7 @@
                               <button class="btn btn-sm btn-outline-warning" id="addProductEdit" pid="${i}">Edit</button>
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-outline-danger" id="removeProduct" pid="${i}">Remove</button>
+                              <button class="btn btn-sm btn-outline-danger" bc="${e[2]}" id="removeProduct" pid="${i}">Remove</button>
                             </td>
                           </tr>
                         `)

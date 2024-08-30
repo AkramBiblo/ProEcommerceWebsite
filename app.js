@@ -11,6 +11,7 @@ const bankbook = require("./src/routes/bankbook");
 const register = require("./src/routes/employee");
 const customer = require("./src/routes/customer");
 const supplier = require("./src/routes/supplier");
+const accounts = require("./src/routes/accounts");
 const purchase = require("./src/routes/purchase");
 const sales = require("./src/routes/sales");
 
@@ -34,6 +35,7 @@ app.use("/bank", bankbook);
 app.use("/employee", register);
 app.use("/customer", customer);
 app.use("/supplier", supplier);
+app.use("/accounts", accounts);
 app.use("/purchase", purchase);
 app.use("/sales", sales);
 

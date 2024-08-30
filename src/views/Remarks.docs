@@ -5,3 +5,6 @@ should be returned. (Editing the purchase challan for quantity decrement must be
 To Do List:
 1.  Supplier & Customer balance need to be updated on 
     creating every purchase, return and sales, return.
+
+
+Working on : Purchase vs supplier balance.
