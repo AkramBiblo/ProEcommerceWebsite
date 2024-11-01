@@ -575,6 +575,20 @@ purchase.post("/invoice_search", (req, res) => {
   });
 });
 
+purchase.get("/invoiceVerification/:invoice", (req, res) => {
+  let invoice = req.params.invoice;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  con.connect((err) => {
+    let sql = `SELECT * FROM purchase_challan WHERE invoice_no = "${invoice}"`
+    con.query(sql, (err, result) => {
+      if (result.length > 0) {
+        res.send("Duplicate challan found!")
+      }
+    })
+  })
+})
+
 purchase.post("/remove_invoice", (req, res) => {
   let invoice = req.body.invoice;
   const getDBInfo = require("../../db");

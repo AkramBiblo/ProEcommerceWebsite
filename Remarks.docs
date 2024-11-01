@@ -1,0 +1,14 @@
+# Once a purchase is submitted. if the quantity need to be decresed then the subject product
+should be returned. (Editing the purchase challan for quantity decrement must be avoid)
+
+
+To Do List:
+1.  Supplier & Customer balance need to be updated on 
+    creating every purchase, return and sales, return. (Done)
+
+2. Removing challan vs update the supplier/customer balance. 
+3. Supplier Payment/Customer cash collecttion => Show full months transactions.
+4. Customer/Supplier can not be removed after having any transaction.
+
+
+Working on : Purchase vs supplier balance.

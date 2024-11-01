@@ -165,24 +165,26 @@
               <th>Type</th>
               <th>Address</th>
               <th>Contact</th>
+              <th>Balance</th>
               <th>Edit</th>
               <th>Remove</th>
             </tr>
           </thead>
           <tbody>
-            <% if (locals.message !== null) { message.forEach(function(employee) {%>
+            <% if (locals.message !== null) { message.forEach(function(c) {%>
             <tr>
-            <td><%= employee.customer_id %></td>
-            <td><%= employee.name %></td>
-            <td><%= employee.c_type %></td>
-            <td><%= employee.address %></td>
-            <td><%= employee.contact %></td>
+            <td><%= c.customer_id %></td>
+            <td><%= c.name %></td>
+            <td><%= c.c_type %></td>
+            <td><%= c.address %></td>
+            <td><%= c.contact %></td>
+            <td><%= c.balance %></td>
             <td>
-              <button cid="<%= employee.customer_id %>" name="edit" class="btn btn-warning">Edit</button>
+              <button cid="<%= c.customer_id %>" name="edit" class="btn btn-warning">Edit</button>
             </td>
             <td>
               <form action="/customer/customer_delete" method="post">
-                <input name="cid" type="hidden" value="<%= employee.id %>">
+                <input name="cid" type="hidden" value="<%= c.customer_id %>">
                 <button class="btn btn-danger">Remove</button>
               </form>
             </td>

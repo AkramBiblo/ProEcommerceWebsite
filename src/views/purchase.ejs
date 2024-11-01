@@ -71,7 +71,7 @@
                               <div class="container d-flex justify-content-end model_search">
                                 <div class="container sticky" id="model_search">
                                   <div class="input-group">
-                                    <input id="search_input" name="model_search_input" type="text" class="form-control"
+                                    <input name="model_search_input" type="text" class="form-control"
                                       placeholder="Search Products" />
                                     <div class="input-group-append">
                                       <button name="model_search_submit_button" class="btn btn-info" type="submit">
@@ -369,7 +369,7 @@
                     <input id="search_input" name="search_input" type="text" class="form-control"
                       placeholder="Search Invoice" />
                     <div class="input-group-append">
-                      <button name="search_submit_button" class="btn btn-info" type="submit">
+                      <button name="search_submit_button" name="searchChallan" class="btn btn-info" type="submit">
                         Search
                       </button>
                     </div>
@@ -410,11 +410,12 @@
               </button>
             </div>
           </div>
-          <div class="container">
-            <div class="container">
+          <div class="container-fluid">
+            <div class="container-fluid table-responsive">
               <table class="table">
                 <thead>
                   <tr>
+                    <th>Challan</th>
                     <th>Model</th>
                     <th>Brand</th>
                     <th>MRP</th>
@@ -477,7 +478,7 @@
             } else {
               $("#showChallanTable").empty();
               result.forEach((e) => {
-              let date = e.pur_date.slice(0, 10)
+              let date = e.date.slice(0, 10)
               $("#showChallanTable").append(`
                   <tr>
                     <td>
@@ -603,6 +604,19 @@
         })
       });
       
+      $("#invoice").focusout(() => {
+        let i = $("#invoice").val()
+        $.ajax({
+            url: `/purchase/invoiceVerification/${i}`,
+            type: "get",
+            success: (data) => {
+              if (data == "Duplicate challan found!") {
+                $("#invoice").val("")
+                alert(`Duplicate challan (${i}) found!`)
+              }
+            }
+          })
+      })
 
     })
 
@@ -713,7 +727,7 @@
                 for (let i = 0; i < purchaseData.length; i++) {
                 const e = purchaseData[i];
                 let bc = e[2];
-                if (bc.includes(b)) {
+                if (bc == b) {
                   alert(`Duplicate barcode found! "${b}"`)
                   DuplicateBCFound = true;
                 }
@@ -860,7 +874,7 @@
           success: (data) => {
             $("#showChallanTable").empty()
             data.forEach((e) => {
-              let date = e.pur_date.slice(0, 10)
+              let date = e.date.slice(0, 10)
               $("#showChallanTable").append(`
                   <tr>
                     <td>
@@ -1344,7 +1358,7 @@
 
                     }
 
-                  }
+                  } 
              
               }
             })
@@ -1538,6 +1552,9 @@
             $("#addedModelForReturn").empty()
             $("#addedModelForReturn").append(`
                           <tr>
+                            <td>
+                              ${e[0].invoice_no}
+                            </td> 
                             <td>
                               ${e[0].model}
                             </td>  

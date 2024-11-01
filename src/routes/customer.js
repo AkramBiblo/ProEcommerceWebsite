@@ -213,7 +213,7 @@ customer.post("/customer_delete", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
   
-  let sql = `DELETE FROM customer WHERE id = "${cid}"`;
+  let sql = `DELETE FROM customer WHERE customer_id = "${cid}"`;
   con.query(sql, (err, result) => {
     
     let sql = `SELECT * FROM customer`;

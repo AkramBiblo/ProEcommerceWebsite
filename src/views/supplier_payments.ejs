@@ -45,7 +45,7 @@
                       <h6><label for="date">Date</label></h6>
                     </div>
                     <div class="col-lg-8">
-                      <input type="date" class="form-control" name="date"/>
+                      <input type="date" class="form-control" name="date" required/>
                     </div>
                   </div>
                   <div class="row mt-3">
@@ -53,8 +53,9 @@
                       <h6><label for="amount">Amount Tk.</label></h6>
                     </div>
                     <div class="col-lg-8">
-                      <input type="text" class="form-control" name="amount" placeholder="Amount
-                      " />
+                      <input type="text" class="form-control" name="amount" placeholder="Amount"/>
+                      <input type="hidden" class="form-control" name="reservedAmountForEdit" placeholder=""/>
+                      <input type="hidden" class="form-control" name="reservedPaymentIdForEdit" placeholder=""/>
                     </div>
                   </div>
                   <div class="row mt-3">
@@ -75,7 +76,13 @@
                                       <h6><label for="supplier"><span style="color: red;">* </span>Supplier</label></h6>
                                   </div>
                                   <div class="col-lg-8">
-                                       <div class="form-group">
+                                    <div id="supplierDivForEdit" class="hide">
+                                      <input type="hidden" name="reservedSupplier_id" id="reservedSupplier_id">
+                                      <input type="hidden" name="supplier_id" id="supplier_id">
+                                    <input class="form-control" type="text" name="selected_supplier" id="selected_supplier" readonly>
+                                    <input class="btn btn-outline-dark btn-sm" id="supplierEditBtn" value="Edit Supplier">
+                                  </div>
+                                       <div class="form-group" id="selectSupplierDiv">
                                     <select class="form-control" id="supplier" name="supplier">
                                       <option value="Select Supplier" selected>Select Supplier</option>
                                       <% if (locals.supplier) { locals.supplier.forEach(function(s) {%>
@@ -119,6 +126,7 @@
               </div>
               <div class="container d-flex justify-content-end mt-4 mr-3">
                 <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Pay" />
+                <input type="hidden" name="isEditing" value="False" id="updatePaymentBtn">
               </div>
             </form>
           </div>
@@ -130,16 +138,24 @@
                 <th>Date</th>
                 <th>Supplier Name</th>
                 <th>Balance</th>
+                <th>Edit</th>
+                <th>Remove</th>
               </tr>
             </thead>
-            <tbody>
-              <% if (locals.payments) { locals.payments.forEach(function(s) {
-                let date = s.peyment_date.toLocaleDateString("en-US")
+            <tbody id="paymentDataList">
+              <% if (locals.payments) { locals.payments.forEach(function(p) {
+                let date = p.date.toLocaleDateString("en-US")
                  %>
                 <tr>
                   <td><%= date %></td>
-                  <td><%= s.receiver %></td>
-                  <td><%= s.amount %></td>
+                  <td><%= p.receiver %></td>
+                  <td><%= p.amount %></td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editPayment" paymentId="<%= p.id %>">Edit</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger" name="removePayment" paymentId="<%= p.id %>">Remove</button>
+                  </td>
                 </tr>
             <% })} %>
             </tbody>
@@ -182,8 +198,16 @@
             }
           })
         });  
+        
+        $("#supplierEditBtn").click(() => {
+          $("#supplierDivForEdit").addClass("hide")
+            $("#selectSupplierDiv").removeClass("hide")
+
+        })
+
         $("#supplier").change(() => {
-          let supplier = $("#supplier").val()
+          let supplier =  $("#supplier").val()
+
           $.ajax({
             url: "/supplier/supplier_search",
             type: "post",
@@ -191,8 +215,42 @@
               SI : supplier
             },
             success: (data) => {
+
+            let reservedSupplier_id = $(`input[name="reservedSupplier_id"]`).val()
+            let reservedAmountForEdit = $(`input[name="reservedAmountForEdit"]`).val()
+            let isEditing = $("#updatePaymentBtn").val()
+            if (isEditing == "True") {
+              if (reservedSupplier_id == data[0].supplier_id) {
+                
+                alert("This payment has already been issued to this supplier!")
+                $("#supplierDivForEdit").removeClass("hide")
+                $("#selectSupplierDiv").addClass("hide")
+                let supplier = data[0];
+                let calcBalance = Number(supplier.balance) - Number(reservedAmountForEdit)
+                $(`input[name="supplier_id"]`).val(supplier.supplier_id)
+                $(`input[name="selected_supplier"]`).val(supplier.name)
+                  $(`input[name="balance"]`).val(calcBalance)
+                  $(`input[name="prvBalance"]`).val(calcBalance)
+                  let amount = $(`input[name="amount"]`).val()
+                  let totalBalance = Number(amount) + Number(calcBalance)
+                  $(`input[name="Cbalance"]`).val(totalBalance)
+              } else {
+                $(`input[name="selected_supplier"]`).val(data[0].name)
+                $(`input[name="supplier_id"]`).val(data[0].supplier_id)
+                $(`input[name="balance"]`).val(data[0].balance)
+                $(`input[name="prvBalance"]`).val(data[0].balance)
+                let amount = $(`input[name="amount"]`).val()
+                let totalBalance = Number(amount) + Number(data[0].balance)
+                $(`input[name="Cbalance"]`).val(totalBalance)
+              }
+            } else {
+              $(`input[name="supplier_id"]`).val(data[0].supplier_id)
               $(`input[name="balance"]`).val(data[0].balance)
               $(`input[name="prvBalance"]`).val(data[0].balance)
+              let amount = $(`input[name="amount"]`).val()
+              let totalBalance = Number(amount) + Number(data[0].balance)
+              $(`input[name="Cbalance"]`).val(totalBalance)
+            }
             }
           })
         })
@@ -204,6 +262,76 @@
           $(`input[name="Cbalance"]`).val(totalBalance)
         })
       
+        $('body').on("click", `button[name="editPayment"]`, (e) => {
+          let paymentId =  e.target.getAttribute("paymentId")
+        $.ajax({
+          url: "/accounts/getPaymentDataForEdit",
+          type: "post",
+          data: {paymentId: paymentId},
+          success: (data) => {
+            $("#supplierDivForEdit").removeClass("hide")
+            $("#selectSupplierDiv").addClass("hide")
+            let supplier = data[1];
+            let paymentData = data[0]
+            let calcBalance = Number(supplier.balance) - Number(paymentData.amount)
+            $(`input[name="reservedSupplier_id"]`).val(supplier.supplier_id)
+            $(`input[name="reservedAmountForEdit"]`).val(paymentData.amount)
+            $(`input[name="reservedPaymentIdForEdit"]`).val(paymentData.id)
+
+            $(`input[name="supplier_id"]`).val(supplier.supplier_id)
+            $(`input[name="selected_supplier"]`).val(supplier.name)
+              $(`input[name="balance"]`).val(calcBalance)
+              $(`input[name="amount"]`).val(paymentData.amount)
+              $(`input[name="comment"]`).val(paymentData.comment)
+              $(`input[name="prvBalance"]`).val(calcBalance)
+          let totalBalance = Number(paymentData.amount) + Number(calcBalance)
+          $(`input[name="Cbalance"]`).val(totalBalance)
+           $("#updatePaymentBtn").val("True")
+           $("#paymentDataList").empty()
+           alert("Edit your data inside 'Create New' button.")
+          }
+        })
+      
+        })
+      
+        // $(`button[name="removeCashColl"]`).click((e) => {
+        //   alert(e.target.getAttribute("collId"))
+        // })
+        $('body').on("click", `button[name="removePayment"]`, (e) => {
+        let coll_id = e.target.getAttribute("collId");
+        $.ajax({
+          url: "/accounts/removeCashColl",
+          type: "post",
+          data: {coll_id: coll_id},
+          success: (data) => {
+            if (data == "No collection available!") {
+              $("#paymentData").empty()
+              $("#successMsgDiv").hide()
+            } else {
+              data.forEach(c => {
+                let date = new Date(c.date)
+                d = date.toLocaleDateString("en-US")
+                $("#paymentData").append(
+                  `<tr>
+                  <td>${d}</td>
+                  <td>${c.cName}</td>
+                  <td>${c.cAddress}</td>
+                  <td>${c.amount}</td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editCashColl" collId="${c.id}">Edit</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger" name="removeCashColl" collId="${c.id}">Remove</button>
+                  </td>
+                </tr>`
+                )
+              });
+            }
+            
+          }
+        })
+
+      })
       
       
       })

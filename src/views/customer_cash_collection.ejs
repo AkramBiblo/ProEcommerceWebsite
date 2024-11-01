@@ -1,0 +1,515 @@
+<body style="background-color: rgb(232, 248, 250)">
+    <div class="row mt-4">
+      <div class="col-3 border navDiv">
+          <%- include('./partials/navbar.ejs') %>
+      </div>
+      <div class="col">
+        <div class="container">
+          <h4>Customer Cash Collection</h4>
+          <hr />
+        </div>
+        <div class="container result mt-2">
+          <div class="container text-center" id="successMsgDiv">
+            <div class="alert alert-success" id="successMsg">
+              Cash collection updated successfully!
+              </div>
+            </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <button class="btn btn-outline-info" id="createNewButton" data-toggle="collapse" data-target="#createNew">
+                Create New
+              </button>
+            </div>
+            <div class="col">
+              <div class="container">
+                <div class="row mt-3">
+                  <div class="col-lg-4 mt-2 text-right">
+                      <h6><label for="pur_date">From</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                      <input type="date" class="form-control" id="from_date" name="from_date">
+                  </div>
+                </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4 mt-2 text-right">
+                        <h6><label for="pur_date">To</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                        <input type="date" class="form-control" id="to_date" name="to_date">
+                    </div>
+                  </div>
+                  <div class="container-fluid d-flex justify-content-end mt-3">
+                    <input type="submit" class="btn btn-outline-info" id="generate" value="Generate">
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div id="createNew" class="collapse">
+            <!-- <form action="/accounts/customer_cash_collection" method="post"> -->
+              <div class="row">
+                <div class="container p-3">
+                  <h5>Customer Info</h5>
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="row mt-3">
+                        <div class="col-lg-3 mt-2 text-right">
+                            <h6><label for="model"><span style="color: red;">*</span>Customer</label></h6>
+                        </div>
+                        <div class="col-lg-9">
+                          <div class="container">
+                            <input type="text" class="form-control" name="customer" id="customer_selected" required readonly>
+                            <input type="hidden" class="form-control" name="customer" id="customer_id" required readonly>
+                          </div>
+                             <div class="container-fluid d-flex justify-content-center">
+                                <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#mymodal">Select Customer</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="mymodal" role="dialog">
+                                <div class="modal-dialog">
+                                
+                                  <!-- Modal content-->
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="container customer_search_div">
+                                      <div class="container d-flex justify-content-end customer_search">
+                                        <div class="container" id="customer_search">
+                                          <div class="input-group">
+                                            <input id="search_customer" name="customer_search_input" type="text" class="form-control"
+                                              placeholder="Search Products" />
+                                            <div class="input-group-append">
+                                              <button name="customer_search_submit_button" class="btn btn-info" type="submit">
+                                                Search
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="container">
+                                        <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th></th>
+                                          <th>CID</th>
+                                          <th>C.Name</th>
+                                          <th>Address</th>
+                                          <th>Balance</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="customer_search_result">
+                                        
+                                      </tbody>
+                                    </table>
+                                      </div>
+                                    </div>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                             </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <!-- <div class="row mt-3">
+                        <div class="col-lg-4 mt-2 text-right">
+                            <h6><label for="balance">Balance</label></h6>
+                        </div>
+                        <div class="col-lg-8">
+                          <input class="form-control" name="customer_balance" id="customer_balance" required readonly>
+                        </div>
+                      </div> -->
+                    </div>
+                  </div>
+                 <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="row mt-4">
+                        <div class="col-lg-4 mt-2">
+                            <h6><label for="address">Address</label></h6>
+                        </div>
+                        <div class="col-lg-8">
+                          <input class="form-control" name="customer_address" id="customer_address" required readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="row mt-3">
+                        <div class="col-lg-4 mt-2 text-right">
+                            <h6><label for="contact">Contact</label></h6>
+                        </div>
+                        <div class="col-lg-8">
+                          <input class="form-control" name="customer_contact" id="customer_contact" required readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+              </div>
+              <div class="row p-3">
+                <div class="col-sm">
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="date">Date</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="date" class="form-control" name="date" required/>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="amount">Amount Tk.</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="amount" placeholder="Amount
+                      " />
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="comment">Comment</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="comment" placeholder="Comment" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm">
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="balance">Opening Balance</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="hidden" class="form-control" name="prvBalance" readonly/>
+                      <input type="text" class="form-control" name="balance" readonly/>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="Cbalance">Closing Balance</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="Cbalance" readonly/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="container d-flex justify-content-end mt-4 mr-3">
+                <input type="hidden" name="coll_id" id="coll_id">
+                <input class="btn btn-outline-success mr-2" name="submit" isEditing="False" id="updateReceiveBtn" type="submit" value="Update" />
+              </div>
+            <!-- </form> -->
+          </div>
+        </div>
+        <div class="container mt-2">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Address</th>
+                <th>Balance</th>
+                <th>Edit</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody id="paymentData">
+              <% if (locals.payments) { locals.payments.forEach(function(c) {
+                let date = c.date.toLocaleDateString("en-US")
+                 %>
+                <tr>
+                  <td><%= date %></td>
+                  <td><%= c.cName %></td>
+                  <td><%= c.cAddress %></td>
+                  <td><%= c.amount %></td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editCashColl" collId="<%= c.id %>">Edit</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger" name="removeCashColl" collId="<%= c.id %>">Remove</button>
+                  </td>
+                </tr>
+            <% })} %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function logout() {
+        document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        location.href = "/";
+      }
+      $(document).ready(() => {
+        $("#successMsgDiv").hide()
+        $("#updateReceiveBtn").click((e) => {
+          let isEditing = e.target.getAttribute("isEditing");
+           let currentBalance = $(`input[name="Cbalance"]`).val()
+           let cName = $('#customer_selected').val()
+           let cid = $('#customer_id').val()
+           let coll_id = $('#coll_id').val()
+           let cAddress = $('#customer_address').val()
+           let amount = $(`input[name="amount"]`).val()
+           let comment = $(`input[name="comment"]`).val()
+           let date = $(`input[name="date"]`).val()
+           if (date == "") {
+            alert("Date is required!")
+            return;
+           }
+
+           $.ajax({
+            url: "/accounts/customer_cash_collection",
+            type: "post",
+            data: {
+              cid: cid,
+              coll_id: coll_id,
+              cName: cName,
+              cAddress: cAddress,
+              amount: amount,
+              currentBalance: currentBalance,
+              date: date,
+              comment: comment,
+              isEditing: isEditing
+            },
+            success: (data) => {
+              $("#successMsgDiv").show()
+              $("#errDiv").hide()
+              // $("#successMsg").text(data.successMsg)
+              $(`input[name="Cbalance"]`).val('')
+           $('#customer_selected').val('')
+           $('#customer_id').val('')
+           $('#customer_address').val('')
+           $(`input[name="amount"]`).val('')
+           $(`input[name="comment"]`).val('')
+           $(`input[name="prvBalance"]`).val('')
+           $(`input[name="balance"]`).val('')
+           $(`input[name="date"]`).val('')
+           $(`#customer_contact`).val('')
+           $("#paymentData").empty()
+              data.forEach(c => {
+                let date = new Date(c.date)
+                d = date.toLocaleDateString("en-US")
+                $("#paymentData").append(
+                  `<tr>
+                  <td>${d}</td>
+                  <td>${c.cName}</td>
+                  <td>${c.cAddress}</td>
+                  <td>${c.amount}</td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editCashColl" collId="${c.id}">Edit</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger" name="removeCashColl" collId="${c.id}">Remove</button>
+                  </td>
+                </tr>`
+                )
+              });
+            }
+           })
+          })
+
+        $(`button[name="search_submit_button"]`).click(() => {
+          let SI = $(`input[name="search_input"]`).val()
+          $.ajax({
+            url: "/bank/bank_search",
+            method: 'POST',
+            data: {
+              SI: SI
+            },
+            success: (data) => {
+              if (data == "No Bank found!") {
+                alert("No Bank found!")
+              } else {
+                $('tbody').empty()
+                for (let i = 0; i < data.length; i++) {
+                  const elem = data[i];
+                  $('tbody').prepend(
+                    `<tr>
+                    <td>${elem.name}</td>
+                    <td>${elem.branch}</td>
+                    <td>${elem.ac_nr}</td>
+                    <td>${elem.balance}</td>
+                  </tr>`
+                  )
+                }
+              
+              }
+            }
+          })
+        });  
+      
+        $(`input[name="amount"]`).keyup(() => {
+          let amount = $(`input[name="amount"]`).val()
+          let balance = $(`input[name="prvBalance"]`).val()
+          let totalBalance = Number(balance) - Number(amount)
+          $(`input[name="Cbalance"]`).val(totalBalance)
+        })
+      
+        $(`button[name="customer_search_submit_button"]`).click(() => {
+        let customer = $(`input[name="customer_search_input"]`).val()
+        $.ajax({
+          url: "/sales/search_customer",
+          method: 'POST',
+          data: {
+            customer: customer
+          },
+          success: (result) => {
+            if (result == "No customer found!") {
+              alert ("No customer found!")
+            } else {
+              $('#customer_search_result').empty();
+              let count = 0;
+            for (let i = 0; i < result.length; i++) {
+                count++
+              const data = result[i];
+                  $('#customer_search_result').append(`
+                  <tr>
+                  <td><input onclick="addCustomer(${count})" type="checkbox" name="customer_select_checkbox" balance="${data.balance}" CID="${data.customer_id}" id="${count}" customer_name="${data.name}" customer_addr="${data.address}" customer_contact="${data.contact}"></td>
+                    <td>${data.customer_id}</td>
+                    <td>${data.name}</td>
+                    <td>${data.address}</td>
+                    <td>${data.balance}</td>
+                  </tr>`)
+
+            }
+             
+            }
+
+           
+            
+          }
+        })
+      });
+      
+        $("#generate").click(() => {
+          
+          let from_date = $("#from_date").val()
+          let to_date = $("#to_date").val()
+          if (from_date == "" || to_date == "") {
+            alert("From date or To date is empty!")
+            return
+          }
+          $.ajax({
+            url: "/accounts/searchPaymentInfo",
+            type: "post",
+            data: {
+              from_date : from_date,
+              to_date : to_date
+            },
+            success: (data) => {
+              $("#paymentData").empty()
+              if (data.length > 0) {
+                data.forEach(c => {
+                let date = new Date(c.date)
+                d = date.toLocaleDateString("en-US")
+                $("#paymentData").append(
+                  `<tr>
+                  <td>${d}</td>
+                  <td>${c.cName}</td>
+                  <td>${c.cAddress}</td>
+                  <td>${c.amount}</td>
+                </tr>`
+                )
+              });
+              } else {
+              $("#paymentData").empty()
+                alert("No payment available on the selected period!")
+              }
+            }
+          })
+        })
+      
+        $('body').on("click", `button[name="editCashColl"]`, (e) => {
+          let collId =  e.target.getAttribute("collId")
+        $.ajax({
+          url: "/accounts/getCollectionForEdit",
+          type: "post",
+          data: {collId: collId},
+          success: (data) => {
+            let cCollData = data[0]
+           $('#customer_selected').val(cCollData.cName)
+           $('#customer_id').val(cCollData.cid)
+           $('#coll_id').val(collId)
+           $('#customer_address').val(cCollData.cAddress)
+          $('#customer_contact').val(data[1].contact)
+           $(`input[name="amount"]`).val(cCollData.amount)
+           $(`input[name="comment"]`).val(cCollData.comment)
+           let balance = data[1].balance
+           let pBalance = Number(balance) + Number(cCollData.amount)
+           $(`input[name="prvBalance"]`).val(pBalance)
+           $(`input[name="balance"]`).val(pBalance)
+           $(`input[name="Cbalance"]`).val(balance)
+           $("#updateReceiveBtn").attr('isEditing', "True")
+           alert("Edit your data inside 'Create New' button.")
+          }
+        })
+      
+        })
+      
+        // $(`button[name="removeCashColl"]`).click((e) => {
+        //   alert(e.target.getAttribute("collId"))
+        // })
+        $('body').on("click", `button[name="removeCashColl"]`, (e) => {
+        let coll_id = e.target.getAttribute("collId");
+        $.ajax({
+          url: "/accounts/removeCashColl",
+          type: "post",
+          data: {coll_id: coll_id},
+          success: (data) => {
+            if (data == "No collection available!") {
+              $("#paymentData").empty()
+              $("#successMsgDiv").hide()
+            } else {
+              data.forEach(c => {
+                let date = new Date(c.date)
+                d = date.toLocaleDateString("en-US")
+                $("#paymentData").append(
+                  `<tr>
+                  <td>${d}</td>
+                  <td>${c.cName}</td>
+                  <td>${c.cAddress}</td>
+                  <td>${c.amount}</td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editCashColl" collId="${c.id}">Edit</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger" name="removeCashColl" collId="${c.id}">Remove</button>
+                  </td>
+                </tr>`
+                )
+              });
+            }
+            
+          }
+        })
+
+      })
+      
+      })
+
+      function addCustomer(a) {
+        $(`input[name="amount"]`).val('')
+        $(`input[name="Cbalance"]`).val('')
+
+              let C_name = document.getElementById(a).getAttribute('customer_name');
+              let C_contact = document.getElementById(a).getAttribute('customer_contact');
+              let C_addr = document.getElementById(a).getAttribute('customer_addr');
+              let balance = document.getElementById(a).getAttribute('balance');
+              let CID = document.getElementById(a).getAttribute('CID');
+              $('#customer_selected').val('')
+              $('#customer_selected').val(C_name)
+              $(`input[name="balance"]`).val(balance)
+              $(`input[name="prvBalance"]`).val(balance)
+              $('#customer_address').val(C_addr)
+              $('#customer_contact').val(C_contact)
+              $('#customer_id').val(CID)
+              $('#customer_search_result').empty()
+            }
+
+    </script>
+  </body>
