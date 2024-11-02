@@ -154,8 +154,11 @@
                     <button class="btn btn-outline-warning" name="editPayment" paymentId="<%= p.id %>">Edit</button>
                   </td>
                   <td>
-                    <button class="btn btn-outline-danger" name="removePayment" paymentId="<%= p.id %>">Remove</button>
-                  </td>
+                    <form action="/accounts/removePayment" method="post">
+                      <input type="hidden" name="paymentId" value="<%= p.id %>">
+                    <button type="submit" class="btn btn-outline-danger">Remove</button>
+                  </form>
+                    </td>
                 </tr>
             <% })} %>
             </tbody>
@@ -294,44 +297,19 @@
       
         })
       
-        // $(`button[name="removeCashColl"]`).click((e) => {
-        //   alert(e.target.getAttribute("collId"))
-        // })
-        $('body').on("click", `button[name="removePayment"]`, (e) => {
-        let coll_id = e.target.getAttribute("collId");
-        $.ajax({
-          url: "/accounts/removeCashColl",
-          type: "post",
-          data: {coll_id: coll_id},
-          success: (data) => {
-            if (data == "No collection available!") {
-              $("#paymentData").empty()
-              $("#successMsgDiv").hide()
-            } else {
-              data.forEach(c => {
-                let date = new Date(c.date)
-                d = date.toLocaleDateString("en-US")
-                $("#paymentData").append(
-                  `<tr>
-                  <td>${d}</td>
-                  <td>${c.cName}</td>
-                  <td>${c.cAddress}</td>
-                  <td>${c.amount}</td>
-                  <td>
-                    <button class="btn btn-outline-warning" name="editCashColl" collId="${c.id}">Edit</button>
-                  </td>
-                  <td>
-                    <button class="btn btn-outline-danger" name="removeCashColl" collId="${c.id}">Remove</button>
-                  </td>
-                </tr>`
-                )
-              });
-            }
-            
-          }
-        })
+      //   $('body').on("click", `button[name="removePayment"]`, (e) => {
+      //     let paymentId =  e.target.getAttribute("paymentId")
 
-      })
+      //   $.ajax({
+      //     url: "/accounts/removePayment",
+      //     type: "post",
+      //     data: {paymentId: paymentId},
+      //     success: (data) => {
+
+      //     }
+      //   })
+
+      // })
       
       
       })

@@ -267,8 +267,8 @@ sales.post("/return", (req, res) => {
           let findCustomer = `SELECT * FROM customer WHERE customer_id = "${cid}"`;
           con.query(findCustomer, (err, result) => {
             let balance = result[0].balance;
-            balance = Number(balance) - Number(netTotal)
-            let updateCustomerBalance = `UPDATE customer SET balance = "${balance}"`
+            balance = Number(balance) - Number(sale_value)
+            let updateCustomerBalance = `UPDATE customer SET balance = "${balance}" WHERE customer_id = "${cid}"`
             con.query(updateCustomerBalance, (err, result) => {
               res.send("Product returned successfully!")
             })

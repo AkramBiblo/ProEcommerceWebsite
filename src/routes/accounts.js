@@ -277,6 +277,41 @@ accounts.post("/getPaymentDataForEdit", (req, res) => {
     })
 })
 
+accounts.post("/removePayment", (req, res) => {
+  let paymentId = req.body.paymentId;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM payments WHERE id = "${paymentId}"`
+    con.query(sql, (err, result) => {
+      let receiver_id = result[0].receiver_id;
+      let paidAmount = result[0].amount;
+      let sql = `SELECT * FROM supplier WHERE supplier_id = "${receiver_id}"`;
+      con.query(sql, (err, result) => {
+        let queryBalance = result[0].balance;
+        let balance = Number(queryBalance) - Number(paidAmount);
+        let updateQuery = `UPDATE supplier SET balance = "${balance}" WHERE supplier_id = "${receiver_id}"`
+        con.query(updateQuery, (err, result) => {
+          let deleteQuery = `DELETE FROM payments WHERE id = "${paymentId}"`
+          con.query(deleteQuery, (err, result) => {
+            let sql = `SELECT * FROM supplier`;
+          con.query(sql, (err, result) => {
+            let supplier = result;
+            let sql = `SELECT * FROM payments WHERE payment_type = "supplier_payment" ORDER BY id DESC LIMIT 10`
+            con.query(sql, (err, result) => {
+              res.render("supplier_payments", {
+                supplier: supplier,
+                payments: result,
+                title: "Payments",
+              });
+            })
+          });
+          })
+          
+        })
+      })
+    })
+})
+
 function updateCustomerBalance(cid, currentBalance) {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
