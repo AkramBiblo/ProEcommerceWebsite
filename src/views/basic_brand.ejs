@@ -1,0 +1,206 @@
+<body style="background-color: rgb(232, 248, 250)">
+  <div class="row mt-4">
+    <div class="col-3 border navDiv">
+        <%- include('./partials/navbar.ejs') %>
+    </div>
+    <div class="col">
+      <div class="container">
+        <h4>Existing Brands</h4>
+        <hr />
+      </div>
+      <div class="container result mt-2">
+        <%- include('./partials/successMsg.ejs') %>
+        <%- include('./partials/error.ejs') %>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+              Create New
+            </button>
+            <div id="createNew" class="collapse">
+              <form action="/basic_new_brand_upload" method="post">
+                <div class="row mt-3">
+                  <div class="col-lg-4">
+                    <h6><label for="name">Brand</label></h6>
+                  </div>
+                  <div class="col-lg-8">
+                    <input type="text" class="form-control" name="name" placeholder="Brand Name" />
+                  </div>
+                </div>
+                <div class="container d-flex justify-content-end mt-4 mr-3">
+                  <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Upload" />
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end searchDiv_1">
+            <!-- <form action="/search" method="post"> -->
+            <div class="container sticky" id="searchDiv_1">
+              <div class="input-group">
+                <input id="search_input" name="search_input" type="text" class="form-control"
+                  placeholder="Search Products" />
+                <div class="input-group-append">
+                  <button name="search_submit_button" class="btn btn-info" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+        </div>
+      </div>
+      <div id="editForm" class="container mt-3">
+
+      </div>
+      <div class="container mt-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Brand</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.message) { message.forEach(function(brand) {%>
+            <td><%= brand.id %></td>
+            <td><%= brand.name %></td>
+            <td>
+              <button bid="<%= brand.id %>" name="edit" class="btn btn-warning">Edit</button>
+            </td>
+            <td>
+              <form action="/basic_brand_delete" method="post">
+                <input name="bid" type="hidden" value="<%= brand.id %>">
+                <button class="btn btn-danger">Remove</button>
+              </form>
+            </td>
+            </tr>
+            <% })}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      location.href = "/";
+    }
+    $(document).ready(() => {
+      $(`button[name="search_submit_button"]`).click(() => {
+        let SI = $(`input[name="search_input"]`).val()
+        $.ajax({
+          url: "/basic_brand_search",
+          method: 'POST',
+          data: {
+            SI: SI
+          },
+          success: (data) => {
+            if (data == "No color found!") {
+              alert ("No color found!")
+            } else {
+              $('tbody').empty()
+              for (let i = 0; i < data.length; i++) {
+                const elem = data[i];
+                $('tbody').prepend(
+              `<tr>
+              <td>${elem.id}</td>
+              <td>${elem.name}</td>
+              <td>
+                <button id="editButton" bid="${elem.id}" name="edit" class="btn btn-warning">Edit</button>
+              </td>
+              <td>
+                <form action="/basic_brand_delete" method="post">
+                    <input name="bid" type="hidden" value="${elem.id}">
+                     <button class="btn btn-danger">Remove</button>
+                </form>
+              </td>
+            </tr>`
+            )
+              }
+            
+            }
+          }
+        })
+      });
+      $(`body`).on("click", '#editButton', (e) => {
+        let bid = e.target.getAttribute('bid')
+        $.ajax({
+          url: "/basic_brand_edit",
+          method: 'POST',
+          data: {
+            bid: bid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Brand</h5>
+              </div>
+              <form action="/basic_edit_brand_update" method="post">
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="name">Brand</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="hidden" class="form-control" name="bid" value="${data.id}"/>
+                  <input type="text" class="form-control" name="name" value="${data.name}"/>
+                </div>
+              </div>
+              <div class="container d-flex justify-content-end mt-4 mr-3">
+                <input class="btn btn-light mr-2" name="submit" type="submit" value="Edit" />
+                <input id="cancel" class="btn btn-light mr-2" name="cancel" type="button" value="Cancel" />
+              </div>
+              </form>
+              </div>`)
+          }
+        })
+      
+        
+      });
+
+      $(`button[name="edit"]`).click((e) => {
+        let bid = e.target.getAttribute('bid')
+        $.ajax({
+          url: "/basic_brand_edit",
+          method: 'POST',
+          data: {
+            bid: bid
+          },
+          success: (data) => {
+            $('#editForm').html(`
+           <div class="container bg-warning p-3 border mt-3">
+              <div class="container text-center">
+                <h5 class="text-info">Edit Brand</h5>
+              </div>
+              <form action="/basic_edit_brand_update" method="post">
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <h6><label for="name">Brand</label></h6>
+                </div>
+                <div class="col-lg-8">
+                  <input type="hidden" class="form-control" name="bid" value="${data.id}"/>
+                  <input type="text" class="form-control" name="name" value="${data.name}"/>
+                </div>
+              </div>
+              <div class="container d-flex justify-content-end mt-4 mr-3">
+                <input class="btn btn-light mr-2" name="submit" type="submit" value="Edit" />
+                <input id="cancel" class="btn btn-light mr-2" name="cancel" type="button" value="Cancel" />
+                </div>
+              </form>
+              </div>`)
+          }
+        })
+      });
+
+      $("body").on("click", "#cancel", () => {
+        $('#editForm').empty()
+      })      
+
+
+    })
+  </script>
+</body>

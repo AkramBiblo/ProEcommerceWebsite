@@ -632,4 +632,15 @@
         console.log(products)
       }
       // res.send(result)
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async function stop(params) {
+        await sleep(5000)
+      }
+      stop()
+      
+      // console.log(model)
 </script>

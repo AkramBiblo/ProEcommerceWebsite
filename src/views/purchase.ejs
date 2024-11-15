@@ -169,6 +169,7 @@
                               <h6><label for="brand">Brand</label></h6>
                           </div>
                           <div class="col-lg-8">
+                              <input type="hidden" class="form-control" name="category" id="category">
                               <input type="text" class="form-control" name="brand" id="brand" placeholder="Brand" readonly>
                           </div>
                       </div> 
@@ -590,7 +591,7 @@
               const data = result[i];
                   $('#model_search_result').append(`
                   <tr>
-                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" mrp="${data.mrp}" brand="${data.brand}" product_code="${data.id}" id="${count}" value="${data.product_name}"></td>
+                  <td><input onclick="addModel(${count})" type="checkbox" name="model_select_checkbox" mrp="${data.mrp}" brand="${data.brand}" category="${data.category}" product_code="${data.id}" id="${count}" value="${data.product_name}"></td>
                     <td>${data.product_name}</td>
                     <td>${data.brand}</td>
                     <td>${data.mrp}</td>
@@ -664,9 +665,11 @@
         let val = document.getElementById(a).getAttribute('value');
         let mrp = document.getElementById(a).getAttribute('mrp');
         let brand = document.getElementById(a).getAttribute('brand');
+        let category = document.getElementById(a).getAttribute('category');
         $('#model_selected').val('')
         $('#model_selected').val(val)
         $('#brand').val(brand)
+        $('#category').val(category)
         $('#mrp').val(mrp)
         $('#model_search_result').empty()
         $.ajax({
@@ -940,7 +943,7 @@
                             const elem = result[j];
                             bc.push(elem.barcode)
                           }
-                          let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount, e.brand, "+"]
+                          let product = [e.model, qty, [], e.date, e.invoice_no, e.supplier, e.godown, e.color, e.prev_stock, e.pur_rate, e.mrp, e.disc_per, e.flat_disc_amount, e.brand, e.category, "+"]
                           product[2] = bc;
                           pushProduct(product)
                         let netPurchase_2 = 0
@@ -1050,6 +1053,7 @@
         $('#editSupplierInput').val(`${purchaseData[pid][5]}`)
         $('#model_selected').val(`${purchaseData[pid][0]}`)
         $('#brand').val(`${purchaseData[pid][13]}`)
+        $('#category').val(`${purchaseData[pid][14]}`)
         $('#qty').val(`${purchaseData[pid][1]}`)
         $('#invoice').val(`${purchaseData[pid][4]}`)
         $('#pur_rate').val(`${purchaseData[pid][9]}`)
@@ -1275,6 +1279,7 @@
                           let supplier = $('#supplier').val()
                           let model = $('#model_selected').val()
                           let brand = $('#brand').val()
+                          let category= $('#category').val()
                           let qty = $('#qty').val()
                           let godown = $('#godown').val()
                           let color = $('#color').val()
@@ -1291,7 +1296,7 @@
                             flat_disc = 0
                             pur_rate = mrp
                           }
-                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, "+"]
+                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, category, "+"]
                         let confirmRequiredInput = [model, qty, pur_date, invoice, supplier, godown, color, mrp]
                         for (let i = 0; i < confirmRequiredInput.length; i++) {
                           const elem = confirmRequiredInput[i];
@@ -1308,6 +1313,7 @@
                         $('#flat_disc').val("")
                         $('#pur_rate').val("")
                         $('#brand').val("")
+                        $('#category').val("")
                         $('#mrp').val("")
                         $('#barcode').empty();
                         $("#addedModel").empty();
@@ -1451,6 +1457,7 @@
                           let supplier = $('#supplier').val()
                           let model = $('#model_selected').val()
                           let brand = $('#brand').val()
+                          let category = $('#category').val()
                           let qty = $('#qty').val()
                           let godown = $('#godown').val()
                           let color = $('#color').val()
@@ -1467,7 +1474,7 @@
                             flat_disc = 0
                             pur_rate = mrp
                           }
-                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, "+"]
+                        let product = [model, qty, bc, pur_date, invoice, supplier, godown, color, prev_stock, pur_rate, mrp, disc_per, flat_disc, brand, category, "+"]
                         let confirmRequiredInput = [model, qty, pur_date, invoice, supplier, godown, color, mrp]
                         for (let i = 0; i < confirmRequiredInput.length; i++) {
                           const elem = confirmRequiredInput[i];
@@ -1479,6 +1486,7 @@
                         pushProduct(product)
 
                         $('#model_selected').val("")
+                        $('#category').val("")
                         $('#qty').val("")
                         $('#disc_per').val("")
                         $('#flat_disc').val("")
@@ -1595,7 +1603,6 @@
       
 
       function sendPurchaseData() {
-
         $("#invoiceData").val(purchaseData)
         
         let _data = $("#invoiceData").val()

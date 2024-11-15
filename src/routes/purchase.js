@@ -210,45 +210,48 @@ purchase.post("/new", (req, res) => {
       let a = e.slice(0, -1)
       let productArray = a.split(",")
       let bc = e.split(",")
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 13; i++) {
         bc.pop()
       }
       for (let i = 0; i < 2; i++) {
         bc.shift()
       }
-
+      
       let model = productArray[0]
       let qty = productArray[1]
       _qty += Number(qty)
       let barcode = bc;
-      let pur_date = productArray[productArray.length -11]
+      let pur_date = productArray[productArray.length -12]
       _pur_date = pur_date;
       // let challan = productArray[4]
-      let invoice = productArray[productArray.length - 10]
+      let invoice = productArray[productArray.length - 11]
       _invoice = invoice;
-      let supplier = productArray[productArray.length -9]
+      let supplier = productArray[productArray.length -10]
       _supplier = supplier;
-      let godown = productArray[productArray.length -8]
-      let color = productArray[productArray.length -7]
+      let godown = productArray[productArray.length -9]
+      let color = productArray[productArray.length -8]
       // let prev_stock = productArray[9]
-      let pur_rate = productArray[productArray.length -5]
-      let mrp = productArray[productArray.length -4]
-      let disc_per = productArray[productArray.length -3]
-      let flat_disc = productArray[productArray.length -2]
-      let brand = productArray[productArray.length -1]
-
+      let pur_rate = productArray[productArray.length -6]
+      let mrp = productArray[productArray.length -5]
+      let disc_per = productArray[productArray.length -4]
+      let flat_disc = productArray[productArray.length -3]
+      let brand = productArray[productArray.length -2]
+      let category = productArray[productArray.length -1]
+      // setTimeout(() => {
+      //   console.log(bc)
+      // }, 3000)
       let cal = (Number(mrp) / 100) * Number(disc_per);
       let disc_amt = cal
 
       let total_pur_rate = Number(qty) * Number(pur_rate)
       net_total += total_pur_rate;
-      
+      // return;
       for (let i = 0; i < barcode.length; i++) {
         const e = barcode[i];
         let sqlRemoveQry = `SELECT * FROM purchase WHERE barcode = "${e}"`
         con.query(sqlRemoveQry, (err, result) => {
           if (result.length > 0) {
-            let sql = `UPDATE purchase SET date = "${pur_date}", supplier = "${supplier}", invoice_no = "${invoice}", model = "${model}", brand = "${brand}", godown = "${godown}", color = "${color}", pur_rate = "${pur_rate}", disc_per = "${disc_per}", mrp = "${mrp}", disc_amt = "${disc_amt}", flat_disc_amount = "${flat_disc}", status = "Stock" WHERE barcode = "${e}"`
+            let sql = `UPDATE purchase SET date = "${pur_date}", supplier = "${supplier}", invoice_no = "${invoice}", model = "${model}", category = "${category}", brand = "${brand}", godown = "${godown}", color = "${color}", pur_rate = "${pur_rate}", disc_per = "${disc_per}", mrp = "${mrp}", disc_amt = "${disc_amt}", flat_disc_amount = "${flat_disc}", status = "Stock" WHERE barcode = "${e}"`
             // let sql = `DELETE FROM purchase WHERE barcode = "${e}"`
 
             con.query(sql, (err, result) => {
@@ -257,8 +260,8 @@ purchase.post("/new", (req, res) => {
                   // con.query(sql, (err, result) => {})
             })
           } else {
-            let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, brand, godown, color, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
-            VALUES ("${pur_date}", "${supplier}", "${invoice}", "${model}", "${brand}", "${godown}", "${color}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${e}", "Stock")`;
+            let sql = `INSERT INTO purchase (date, supplier, invoice_no, model, category, brand, godown, color, pur_rate, disc_per, mrp, disc_amt, flat_disc_amount, barcode, status)
+            VALUES ("${pur_date}", "${supplier}", "${invoice}", "${model}", "${category}", "${brand}", "${godown}", "${color}", "${pur_rate}", "${disc_per}", "${mrp}", "${disc_amt}", "${flat_disc}", "${e}", "Stock")`;
             con.query(sql, (err, result) => {})
           }
         })
@@ -268,42 +271,24 @@ purchase.post("/new", (req, res) => {
     let sql = `SELECT * FROM purchase_challan WHERE invoice_no = "${_invoice}"`
       con.query(sql, (err, result) => {
         if (result.length > 0) {
-          
-          updateSupplier(0, _supplier, result[0].net_total)
-          
+          let existingSupplier = result[0].supplier
+          let existingAmount = result[0].net_total
+          if (existingSupplier !== _supplier) {
+            deductChallanAmountFromExistingSupplier(existingSupplier, existingAmount)
+            updateSupplier(net_total, _supplier, 0)
+          } else {
+            updateSupplier(net_total, _supplier, result[0].net_total)
+          }
 
           let sql_ = `UPDATE purchase_challan SET date = "${_pur_date}", net_total = "${net_total}", supplier = "${_supplier}", qty = "${_qty}" WHERE invoice_no = "${_invoice}"`
                       con.query(sql_, (err, result) => {
-                        // let updateSupplier = `SELECT * FROM supplier WHERE name = "${_supplier}"`
-                        // con.query(updateSupplier, (err, result) => {
-                        //   let balance = result[0].balance;
-                        //   let sname = result[0].name;
-                        //   balance = Number(balance) - Number(net_total)
-
-                        //   let updateBalance = `UPDATE supplier SET balance = "${balance}" WHERE name = "${sname}"`
-                        //   con.query(updateBalance, (err, result) => {})
-                        // })
-                        // let sql = `INSERT INTO purchase_challan (invoice_no, pur_date, net_total, supplier, qty)
-                        // VALUES ("${_invoice}", "${_pur_date}", "${net_total}", "${_supplier}", "${_qty}")`
-                        // con.query(sql, (err, result) => {
                           setTimeout(()=> {
-                            updateSupplier(net_total, _supplier, 0)
+                            res.send({ prodUpdatSuccessMsg: "Purchase updated successfully!!!" })
                           }, 3000)
-                          res.send({ prodUpdatSuccessMsg: "Purchase updated successfully!!!" })
-                        // })
                       })
         } else {
           updateSupplier(net_total, _supplier, 0)
-          // let updateSupplier = `SELECT * FROM supplier WHERE name = "${_supplier}"`
-          //               con.query(updateSupplier, (err, result) => {
-          //                 let balance = result[0].balance;
-          //                 let sname = result[0].name;
-          //                 balance = Number(balance) - Number(net_total)
-
-          //                 let updateBalance = `UPDATE supplier SET balance = "${balance}" WHERE name = "${sname}"`
-          //                 con.query(updateBalance, (err, result) => {
-          //                 })
-          //               })
+         
           let sql = `INSERT INTO purchase_challan (invoice_no, date, net_total, supplier, qty)
                         VALUES ("${_invoice}", "${_pur_date}", "${net_total}", "${_supplier}", "${_qty}")`
                         con.query(sql, (err, result) => {
@@ -311,7 +296,20 @@ purchase.post("/new", (req, res) => {
                         })
         }
       })
-  });
+});
+
+  function deductChallanAmountFromExistingSupplier(existingSupplier, existingAmount) {
+    const getDBInfo = require("../../db");
+    const con = getDBInfo.con;
+    let supplierQry = `SELECT * FROM supplier WHERE name = "${existingSupplier}"`
+      con.query(supplierQry, (err, result) => {
+        let supplierBalance = result[0].balance;
+        let balanceToUpdate = Number(supplierBalance) + Number(existingAmount)
+        let sqlForUpdate = `UPDATE supplier SET balance = "${balanceToUpdate}" WHERE name = "${existingSupplier}"`
+        con.query(sqlForUpdate, (err, result) => {
+        })
+      })
+  }
 
   function updateSupplier(pur_rate, supplier, editedProductValue) {
     const getDBInfo = require("../../db");
@@ -320,7 +318,6 @@ purchase.post("/new", (req, res) => {
       let sql = `SELECT * FROM supplier WHERE name = "${supplier}"`
       con.query(sql, (err, result) => {
         let balance = result[0].balance;
-  
         let SubTotal = Number(balance) + Number(editedProductValue)
         let netBalance = SubTotal - Number(pur_rate)
         

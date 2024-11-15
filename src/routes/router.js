@@ -61,6 +61,18 @@ router.get("/color", (req, res) => {
   });
 });
 
+router.get("/brand", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE module = "brand"`;
+  con.query(sql, (err, result) => {
+    res.render("basic_brand", {
+      message: result,
+      title: "Brand",
+    });
+  });
+});
+
 router.get("/godown", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
@@ -277,6 +289,39 @@ router.post("/basic_new_color_upload", (req, res) => {
  
 });
 
+router.post("/basic_new_brand_upload", (req, res) => {
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+
+  let sql_query = `SELECT * FROM basic_module WHERE name = "${name}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name) VALUES ("brand", "${name}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "brand"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_brand", {
+            successMsg: "New brand added successfully!",
+            message: result,
+            title: "Brand",
+          });
+        });
+      });
+    } else {
+       let sql = `SELECT * FROM basic_module WHERE module = "brand"`;
+       con.query(sql, (err, result) => {
+         res.render("basic_brand", {
+           errorMessage: "This brand is already exist!",
+           message: result,
+           title: "Brand",
+         });
+       });
+    }
+  });
+ 
+});
+
 router.post("/basic_new_godown_upload", (req, res) => {
   let name = req.body.name;
   const getDBInfo = require("../../db");
@@ -391,6 +436,23 @@ router.post("/basic_color_delete", (req, res) => {
   });
 });
 
+router.post("/basic_brand_delete", (req, res) => {
+  let bid = req.body.bid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM basic_module WHERE id = "${bid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "brand"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_brand", {
+        successMsg: "Brand removed successfully!",
+        message: result,
+        title: "Brand",
+      });
+    });
+  });
+});
+
 router.post("/basic_godown_delete", (req, res) => {
   let cid = req.body.cid;
   const getDBInfo = require("../../db");
@@ -443,6 +505,16 @@ router.post("/basic_color_edit", (req, res) => {
   const getDBInfo = require("../../db");
   const con = getDBInfo.con;
   let sql = `SELECT * FROM basic_module WHERE id = "${cid}"`;
+  con.query(sql, (err, result) => {
+    res.send(result[0]);
+  });
+});
+
+router.post("/basic_brand_edit", (req, res) => {
+  let bid = req.body.bid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE id = "${bid}"`;
   con.query(sql, (err, result) => {
     res.send(result[0]);
   });
@@ -552,6 +624,24 @@ router.post("/basic_edit_color_update", (req, res) => {
   });
 });
 
+router.post("/basic_edit_brand_update", (req, res) => {
+  let bid = req.body.bid;
+  let name = req.body.name;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `UPDATE basic_module SET name = "${name}" WHERE id = "${bid}"`;
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM basic_module WHERE module = "brand"`;
+    con.query(sql, (err, result) => {
+      res.render("basic_brand", {
+        successMsg: "Brand updated successfully!",
+        message: result,
+        title: "Brand",
+      });
+    });
+  });
+});
+
 router.post("/basic_edit_godown_update", (req, res) => {
   let cid = req.body.cid;
   let name = req.body.name;
@@ -620,6 +710,20 @@ router.post("/basic_color_search", (req, res) => {
   con.query(sql, (err, result) => {
     if (result.length <= 0) {
       res.send("No color found!");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+router.post("/basic_brand_search", (req, res) => {
+  let SI = req.body.SI;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
+  con.query(sql, (err, result) => {
+    if (result.length <= 0) {
+      res.send("No brand found!");
     } else {
       res.send(result);
     }

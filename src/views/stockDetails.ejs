@@ -1,0 +1,124 @@
+<body style="background-color: rgb(232, 248, 250)">
+    <div class="row mt-4">
+      <div class="col-3 border navDiv">
+          <%- include('./partials/navbar.ejs') %>
+      </div>
+      <div class="col">
+        <div class="container">
+          <h4>Stock Details</h4>
+          <hr />
+        </div>
+        <div class="container">
+          <div class="container">
+            <p>Filter Options</p>
+          </div>
+          <div class="container text-center hide" id="searchFailureDiv">
+            
+          </div>
+          <div class="row">
+            <div class="col-sm">
+              <div class="form-group">
+                  <select class="form-control" name="brand" id="brand">
+                    <option value="">Select Brand</option>
+                    <% if (locals.brand) {
+                      brand.forEach(b => {%>
+                      <option value="<%= b.name %>"><%= b.name %></option>
+                    <% })} %>
+                  </select>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="form-group">
+                <select class="form-control" name="category" id="category">
+                  <option value="">Select Category</option>
+                  <% if (locals.category) {
+                    category.forEach(c => {%>
+                      <option value="<%= c.name %>"><%= c.name %></option>
+                    <% })} %>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm">
+              <input type="text" class="form-control" name="model" id="model" placeholder="Search by Model">
+            </div>
+            <div class="col-sm">
+              <button class="btn btn-outline-dark" id="GenerateButton" name="GenerateButton">Generate</button>
+            </div>
+          </div>
+        </div>
+        <div class="container mt-2">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Category</th>
+                <th>Available Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (locals.data) { for (let i = 0; i < locals.data.length; i++) {
+                let brandArr = locals.data[i];
+                  for (let j = 0; j < brandArr.length; j++) {
+                    let product = brandArr[j]%>
+                <tr>
+                  <td><%= product[1] %></td>
+                  <td><%= product[0] %></td>
+                  <td><%= product[2] %></td>
+                  <td><%= product[3] %></td>
+                </tr>
+                <% }}} %>
+            </tbody>
+          </table>
+        </div>
+        
+       
+      </div>
+    </div>
+    <script>
+      $(document).ready(() => {
+        $("#GenerateButton").click(() => {
+          let model = $("#model").val()
+          let brand = $("#brand").val()
+          let category = $("#category").val()
+          if (model == "" && brand == "" && category == "") {
+            alert("Kindly select Model or brand to generate the report!")
+            return
+          }
+          $.ajax({
+            url: `/report/generate`,
+            type: "post",
+            data: {
+              model: model,
+              brand: brand,
+              category: category
+            },
+            success: (data) => {
+              if (data == "Sorry no product available!") {
+                $("#searchFailureDiv").empty()
+                $("tbody").empty()
+                $("#searchFailureDiv").append(`<div class="alert alert-danger">
+                  <h6>${data}</h6>
+                </div>`)
+                $("#searchFailureDiv").removeClass("hide")
+              } else {
+                if ($("#searchFailureDiv").hasClass("hide") == false) {
+                  $("#searchFailureDiv").empty()
+                  $("#searchFailureDiv").addClass("hide")
+                }
+                $("tbody").empty()
+                  $("tbody").append(`
+                  <td>${brand}</td>
+                  <td>${model}</td>
+                  <td>${category}</td>
+                  <td>${data.length}</td>
+                `)
+              }
+            } 
+          })
+
+        })
+      })
+      
+    </script>
+  </body>
