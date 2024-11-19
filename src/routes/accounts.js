@@ -231,6 +231,49 @@ accounts.post("/payToSupplier", (req, res) => {
  
 })
 
+accounts.post("/expense", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let isEditing = req.body.isEditing;
+  let date = req.body.date;
+  let head = req.body.head;
+  let revisedHead = req.body.revisedHead;
+  if (revisedHead !== "") {
+    head = revisedHead;
+  }
+  let receiver = req.body.receiver;
+  let amount = req.body.amount;
+  let comment = req.body.comment;
+  let expenseId = req.body.expenseId
+
+  con.connect((err) => {
+    let sql;
+    if (isEditing == "True") {
+      sql = `UPDATE payments SET head = "${head}", receiver = "${receiver}", amount = "${amount}", comment = "${comment}", date = "${date}" WHERE id = "${expenseId}"`
+    } else {
+      sql = `INSERT INTO payments (head, receiver, amount, comment, date, payment_type)
+             VALUES ("${head}", "${receiver}", "${amount}", "${comment}", "${date}", "expense")`
+    }
+    
+    con.query(sql, (err, result) => {
+      let sql = `SELECT * FROM payments WHERE payment_type = "expense"`;
+      con.query(sql, (err, result) => {
+        let expense = result;
+        let sql_1 = `SELECT * FROM basic_module WHERE module = "head" AND type = "expense"`;
+        con.query(sql_1, (err, head) => {
+          res.render("expense", {
+            expense: expense,
+            head: head,
+            title: "Expense",
+            successMsg : "Expense updated successfully!"
+          });
+        })
+        
+      });
+    })
+  })
+})
+
 accounts.post("/searchPaymentInfo", (req, res) => {
   let from_date = req.body.from_date;
   let to_date = req.body.to_date
@@ -277,6 +320,39 @@ accounts.post("/getPaymentDataForEdit", (req, res) => {
     })
 })
 
+accounts.post("/getExpenseDataForEdit", (req, res) => {
+  let expId = req.body.expId;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM payments WHERE id = "${expId}"`
+    con.query(sql, (err, result) => {
+      res.send(result[0])
+    })
+})
+
+accounts.post("/removeExpense", (req, res) => {
+  let expId = req.body.expId;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `DELETE FROM payments WHERE id = "${expId}"`
+  con.query(sql, (err, result) => {
+    let sql = `SELECT * FROM payments WHERE payment_type = "expense"`;
+    con.query(sql, (err, result) => {
+      let expense = result;
+      let sql_1 = `SELECT * FROM basic_module WHERE module = "head" AND type = "expense"`;
+      con.query(sql_1, (err, head) => {
+        res.render("expense", {
+          expense: expense,
+          head: head,
+          title: "Expense",
+          successMsg : "Expense updated successfully!"
+        });
+      })
+      
+    });
+  })
+})
+
 accounts.post("/removePayment", (req, res) => {
   let paymentId = req.body.paymentId;
   const getDBInfo = require("../../db");
@@ -318,8 +394,6 @@ function updateCustomerBalance(cid, currentBalance) {
   let sql = `UPDATE customer SET balance = "${currentBalance}" WHERE customer_id = "${cid}"`
     con.query(sql, (err, result) => {});
 }
-
-
 
 function Pay(rid, r, a, c, d, t) {
   const getDBInfo = require("../../db");

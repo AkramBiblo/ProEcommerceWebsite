@@ -21,9 +21,6 @@ router.get("/", (req, res) => {
     title: "admin",
   });
 });
-router.get("/basic_module", (req, res) => {
-  res.render("basic_module", { title: "Modules" });
-});
 
 router.get("/companies", (req, res) => {
   const getDBInfo = require("../../db");
@@ -58,6 +55,36 @@ router.get("/color", (req, res) => {
       message: result,
       title: "Color",
     });
+  });
+});
+
+router.get("/basic_head", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE module = "head"`;
+  con.query(sql, (err, result) => {
+    res.render("basic_head", {
+      message: result,
+      title: "Head",
+    });
+  });
+});
+
+router.get("/basic_expense", (req, res) => {
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM payments WHERE payment_type = "expense"`;
+  con.query(sql, (err, result) => {
+    let expense = result;
+    let sql_1 = `SELECT * FROM basic_module WHERE module = "head" AND type = "expense"`;
+    con.query(sql_1, (err, head) => {
+      res.render("expense", {
+        expense: expense,
+        head: head,
+        title: "Expense",
+      });
+    })
+    
   });
 });
 
@@ -289,6 +316,40 @@ router.post("/basic_new_color_upload", (req, res) => {
  
 });
 
+router.post("/basic_new_head_upload", (req, res) => {
+  let name = req.body.name;
+  let type = req.body.type;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+
+  let sql_query = `SELECT * FROM basic_module WHERE name = "${name}" AND type = "${type}"`;
+  con.query(sql_query, (err, result) => {
+    if (result.length <= 0) {
+      let sql = `INSERT INTO basic_module (module, name, type) VALUES ("head", "${name}", "${type}")`;
+      con.query(sql, (err, result) => {
+        let sql = `SELECT * FROM basic_module WHERE module = "head"`;
+        con.query(sql, (err, result) => {
+          res.render("basic_head", {
+            successMsg: "New Head added successfully!",
+            message: result,
+            title: "Head",
+          });
+        });
+      });
+    } else {
+       let sql = `SELECT * FROM basic_module WHERE module = "head"`;
+       con.query(sql, (err, result) => {
+         res.render("basic_head", {
+           errorMessage: "This Head is already exist!",
+           message: result,
+           title: "Head",
+         });
+       });
+    }
+  });
+ 
+});
+
 router.post("/basic_new_brand_upload", (req, res) => {
   let name = req.body.name;
   const getDBInfo = require("../../db");
@@ -434,6 +495,50 @@ router.post("/basic_color_delete", (req, res) => {
       });
     });
   });
+});
+
+router.post("/basic_head_delete", (req, res) => {
+  let cid = req.body.cid;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql_1 = `SELECT * FROM basic_module WHERE id = "${cid}"`
+  con.query(sql_1, (err, result) => {
+    let type = result[0].type;
+    let title = result[0].name;
+    let queryForTransection;
+    if (type == "income") {
+      queryForTransection = `SELECT * FROM customer_cash_collection WHERE type = "${title}"`
+    } else if (type == "expense") {
+      queryForTransection = `SELECT * FROM payments WHERE payment_type = "${title}"`
+    }
+    con.query(queryForTransection, (err, result) => {
+      if (result.length > 0) {
+        res.send()
+        let sql = `SELECT * FROM basic_module WHERE module = "head"`;
+          con.query(sql, (err, result) => {
+            res.render("basic_head", {
+              errorMessage: "This head can not be removed due to having transaction!",
+              message: result,
+              title: "Head",
+            });
+          });
+      } else {
+        let sql = `DELETE FROM basic_module WHERE id = "${cid}"`;
+        con.query(sql, (err, result) => {
+          let sql = `SELECT * FROM basic_module WHERE module = "head"`;
+          con.query(sql, (err, result) => {
+            res.render("basic_head", {
+              successMsg: "Head removed successfully!",
+              message: result,
+              title: "Head",
+            });
+          });
+        });
+      }
+    })
+
+  })
+  
 });
 
 router.post("/basic_brand_delete", (req, res) => {
@@ -710,6 +815,20 @@ router.post("/basic_color_search", (req, res) => {
   con.query(sql, (err, result) => {
     if (result.length <= 0) {
       res.send("No color found!");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+router.post("/basic_head_search", (req, res) => {
+  let SI = req.body.SI;
+  const getDBInfo = require("../../db");
+  const con = getDBInfo.con;
+  let sql = `SELECT * FROM basic_module WHERE name LIKE "%${SI}%"`;
+  con.query(sql, (err, result) => {
+    if (result.length <= 0) {
+      res.send("No head found!");
     } else {
       res.send(result);
     }

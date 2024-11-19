@@ -38,10 +38,18 @@ report.get("/stock", (req, res) => {
               let modelName = result_2[0].model;
               let stock = result_2.length;
               let brand = result_2[0].brand;
+              let stockValue = 0
+              for (let pv = 0; pv < result_2.length; pv++) {
+                const p = result_2[pv];
+                let val = p.pur_rate
+                Number(val)
+                stockValue+= val
+              }
+              
               let categoryQuery = `SELECT * FROM basic_products WHERE product_name = "${modelName}" AND brand = "${brand}"`
               con.query(categoryQuery, (err, result_4) => {
                 let cateGory = result_4[0].category;
-                let productData = [modelName, brand, cateGory, stock]
+                let productData = [modelName, brand, cateGory, stock, stockValue]
                 pushProduct(productData, brand)
               })
             })
@@ -60,10 +68,17 @@ report.get("/stock", (req, res) => {
               let modelName = result_2[0].model;
               let stock = result_2.length;
               let brand = result_2[0].brand;
+              let stockValue = 0
+              for (let pv_2 = 0; pv_2 < result_2.length; pv_2++) {
+                const p = result_2[pv_2];
+                let val = p.pur_rate
+                Number(val)
+                stockValue+= val
+              }
               let categoryQuery = `SELECT * FROM basic_products WHERE product_name = "${modelName}" AND brand = "${brand}"`
               con.query(categoryQuery, (err, result_4) => {
                 let cateGory = result_4[0].category;
-                let productData = [modelName, brand, cateGory, stock]
+                let productData = [modelName, brand, cateGory, stock, stockValue]
                 pushProduct(productData, brand)
               })
             })
@@ -137,7 +152,14 @@ report.post("/generate", (req, res) => {
     if (result.length <= 0) {
       res.send("Sorry no product available!")
     } else {
-      res.send(result)
+      let totalStockValue = 0
+      for (let i = 0; i < result.length; i++) {
+        const product = result[i];
+        let p = product.pur_rate;
+        let purchaseRate = Number(p);
+        totalStockValue+= purchaseRate
+      }
+      res.send({result: result, value: totalStockValue})
     }
   })
 

@@ -54,6 +54,7 @@
                 <th>Model</th>
                 <th>Category</th>
                 <th>Available Stock</th>
+                <th>Stock Value</th>
               </tr>
             </thead>
             <tbody>
@@ -66,6 +67,7 @@
                   <td><%= product[0] %></td>
                   <td><%= product[2] %></td>
                   <td><%= product[3] %></td>
+                  <td><%= product[4] %></td>
                 </tr>
                 <% }}} %>
             </tbody>
@@ -111,7 +113,8 @@
                   <td>${brand}</td>
                   <td>${model}</td>
                   <td>${category}</td>
-                  <td>${data.length}</td>
+                  <td>${data.result.length}</td>
+                  <td>${data.value}</td>
                 `)
               }
             } 

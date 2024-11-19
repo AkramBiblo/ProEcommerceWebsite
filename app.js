@@ -45,3 +45,14 @@ app.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log(`Server is listening on port ${PORT}`);
 });
+
+
+// let db = "wds"
+// let query_1 = {table:["purchase"],Query:["status"],value:["Returned"]} // Query Sample 1
+// let query_3 = {table:["customer"],Query:["name","c_type"], value:["C-2","Dealer"]} // Query Sample 2
+// let queryArr = [query_1]
+// const getDBInfo = require("../../db");
+// let data = getDBInfo.getDataFromDB(db, queryArr)
+// setTimeout(() => {
+//     res.render("home", {title: "Home", data: data})
+// }, 4000)

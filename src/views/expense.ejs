@@ -1,0 +1,232 @@
+<body style="background-color: rgb(232, 248, 250)">
+    <div class="row mt-4">
+      <div class="col-3 border navDiv">
+          <%- include('./partials/navbar.ejs') %>
+      </div>
+      <div class="col">
+        <div class="container">
+          <h4>Expenditure</h4>
+          <hr />
+        </div>
+        <div class="container result mt-2">
+          <%- include('./partials/successMsg.ejs') %>
+          <%- include('./partials/error.ejs') %>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <button class="btn btn-outline-info" data-toggle="collapse" data-target="#createNew">
+                Create New
+              </button>
+              
+            </div>
+            <div class="col d-flex justify-content-end searchDiv_1">
+              <form action="/search" method="post">
+              <div class="container sticky" id="searchDiv_1">
+                <div class="input-group">
+                  <input id="search_input" name="search_input" type="text" class="form-control"
+                    placeholder="Search Expense" />
+                  <div class="input-group-append">
+                    <button name="search_submit_button" class="btn btn-info" type="submit">
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
+          <div id="createNew" class="collapse">
+            <form action="/accounts/expense" method="post">
+              <div class="row p-3">
+                <div class="col-sm">
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="date">Date</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="date" class="form-control" name="date" required/>
+                    </div>
+                  </div>
+                  <div class="row mt-3" id="headDiv">
+                    <div class="col-lg-4">
+                      <h6><label for="head">Select Expense Head</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <div class="form-group" id="head">
+                        <select class="form-control" id="head" name="head">
+                          <option value="Select Head" selected>Select Expense Head</option>
+                          <% if (locals.head) { locals.head.forEach(function(h) {%>
+                            <option><%= h.name %></option>
+                        <% } )}%>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3 hide" id="revisedHeadDiv">
+                    <div class="col-lg-4">
+                      <h6><label for="head">Expense Head</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" id="revisedHead" name="revisedHead" readonly/>
+                      <button class="btn btn-warning" id="showHeadList">Change Head</button>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="receiver">Receiver</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="receiver" placeholder="Receiver" />
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="amount">Amount Tk.</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="amount" placeholder="Amount"/>
+                      <input type="hidden" class="form-control" name="reservedAmountForEdit" placeholder=""/>
+                      <input type="hidden" class="form-control" name="reservedPaymentIdForEdit" placeholder=""/>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-lg-4">
+                      <h6><label for="comment">Comment</label></h6>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="text" class="form-control" name="comment" placeholder="Comment" />
+                    </div>
+                  </div>
+                  <div class="container d-flex justify-content-end mt-4 mr-3">
+                    <input class="btn btn-outline-success mr-2" name="submit" type="submit" value="Pay" />
+                    <input type="hidden" name="isEditing" value="False" id="updatePaymentBtn">
+                    <input type="hidden" name="expenseId" id="expenseId">
+                  </div>
+                </div>
+                <div class="col-sm"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="container mt-2">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Expense Head</th>
+                <th>Receiver</th>
+                <th>Amount</th>
+                <th>Edit</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody id="paymentDataList">
+              <% if (locals.expense) { locals.expense.forEach(function(e) {
+                let date = e.date.toLocaleDateString("en-US")
+                 %>
+                <tr>
+                  <td><%= date %></td>
+                  <td><%= e.head %></td>
+                  <td><%= e.receiver %></td>
+                  <td><%= e.amount %></td>
+                  <td>
+                    <button class="btn btn-outline-warning" name="editPayment" expId="<%= e.id %>">Edit</button>
+                  </td>
+                  <td>
+                    <form action="/accounts/removeExpense" method="post">
+                      <input type="hidden" name="expId" value="<%= e.id %>">
+                    <button type="submit" class="btn btn-outline-danger">Remove</button>
+                  </form>
+                    </td>
+                </tr>
+            <% })} %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      function logout() {
+        document.cookie = "pcs=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        location.href = "/";
+      }
+      $(document).ready(() => {
+        $(`button[name="search_submit_button"]`).click(() => {
+          let SI = $(`input[name="search_input"]`).val()
+          $.ajax({
+            url: "/bank/bank_search",
+            method: 'POST',
+            data: {
+              SI: SI
+            },
+            success: (data) => {
+              if (data == "No Bank found!") {
+                alert("No Bank found!")
+              } else {
+                $('tbody').empty()
+                for (let i = 0; i < data.length; i++) {
+                  const elem = data[i];
+                  $('tbody').prepend(
+                    `<tr>
+                    <td>${elem.name}</td>
+                    <td>${elem.branch}</td>
+                    <td>${elem.ac_nr}</td>
+                    <td>${elem.balance}</td>
+                  </tr>`
+                  )
+                }
+              
+              }
+            }
+          })
+        });  
+      
+        $('body').on("click", `button[name="editPayment"]`, (e) => {
+          let expId =  e.target.getAttribute("expId")
+          $.ajax({
+          url: "/accounts/getExpenseDataForEdit",
+          type: "post",
+          data: {expId: expId},
+          success: (data) => {
+              $("#revisedHeadDiv").removeClass("hide")
+              $("#headDiv").addClass("hide")
+              $("#updatePaymentBtn").val("True")
+              $("#revisedHead").val(data.head)
+              $("#expenseId").val(data.id)
+              $(`input[name="receiver"]`).val(data.receiver)
+              $(`input[name="amount"]`).val(data.amount)
+              $(`input[name="comment"]`).val(data.comment)
+           alert("Edit your data inside 'Create New' button.")
+          }
+        })
+      
+        })
+      
+        $('body').on("click", "#showHeadList", (e) => {
+          $("#revisedHeadDiv").addClass("hide")
+              $("#headDiv").removeClass("hide")
+        })
+
+        $('#head').on("change", () => {
+          $("#revisedHead").val("")
+        })
+      
+        //   $('body').on("click", `button[name="removePayment"]`, (e) => {
+      //     let paymentId =  e.target.getAttribute("paymentId")
+
+      //   $.ajax({
+      //     url: "/accounts/removePayment",
+      //     type: "post",
+      //     data: {paymentId: paymentId},
+      //     success: (data) => {
+
+      //     }
+      //   })
+
+      // })
+      
+      
+      })
+    </script>
+  </body>
